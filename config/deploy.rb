@@ -12,12 +12,17 @@ ssh_options[:forward_agent] = true
 set :branch, "master"
 set :user, "heathd"
 set :deploy_via, :remote_cache
+set :use_sudo, false
 
 set :scm, :git
 
 role :web, "davidheath.org"                          # Your HTTP server, Apache/etc
 role :app, "davidheath.org"                          # This may be the same as your `Web` server
 role :db,  "davidheath.org", :primary => true # This is where Rails migrations will run
+
+after "deploy:update_code" do
+  run "ln -sf #{deploy_to}/#{shared_dir}/config/database.yml #{current_release}/config/database.yml"
+end
 
 # If you are using Passenger mod_rails uncomment this:
 # namespace :deploy do
@@ -27,3 +32,4 @@ role :db,  "davidheath.org", :primary => true # This is where Rails migrations w
 #     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
 #   end
 # end
+
