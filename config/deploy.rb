@@ -1,6 +1,7 @@
 require "bundler/capistrano"
 
-set :rvm_ruby_string, '1.9.2p180'
+set :rvm_ruby_string, 'ruby-1.9.3-p194'
+set :rvm_type, :system
 require "rvm/capistrano"
 
 set :application, "skint_dance"
