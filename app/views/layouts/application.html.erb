@@ -1,14 +1,53 @@
 <!DOCTYPE html>
-<html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>SkintDance</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+  <title>Skint Dance - <%= yield :page_title %></title>
   <%= stylesheet_link_tag    "application", :media => "all" %>
   <%= javascript_include_tag "application" %>
   <%= csrf_meta_tags %>
+  
+  <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-33301926-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
 </head>
-<body>
 
-<%= yield %>
-
+<% if @is_homepage %>
+<body id="homepage" class="card">
+  <div id="content">
+    <%= yield %>
+  </div>
 </body>
+<% else %>
+  <body class="page">
+  <div class="masthead">
+    <p class="logo"><a href="index.html">Skint 2011</a></p>
+  </div>
+  <div id="content">
+    <%= yield %>
+  </div>
+  <div class="footer">
+    <a href="/">Home</a> &ndash; 
+    <a href="info.html">What is Skint?</a> &ndash; 
+    <a href="practical.html">Practical stuff</a>  &ndash; 
+    <a href="transport.html">Transport</a> &ndash; 
+    <a href="programme.html">Programme</a> &ndash; 
+    <a href="photos.html">Photos</a> &ndash; 
+    <a href="constitution.html">Constitution</a>
+  </div>
+</body>
+<% end %>
+
 </html>
