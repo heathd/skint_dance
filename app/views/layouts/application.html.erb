@@ -27,6 +27,7 @@
 <% if @is_homepage %>
 <body id="homepage" class="card">
   <div id="content">
+    <%= render partial: 'shared/notices' %>
     <%= yield %>
   </div>
 </body>
@@ -36,6 +37,7 @@
     <p class="logo"><a href="index.html">Skint 2011</a></p>
   </div>
   <div id="content">
+    <%= render partial: 'shared/notices' %>
     <%= yield %>
   </div>
   <div class="footer">

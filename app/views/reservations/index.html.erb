@@ -1,0 +1,41 @@
+<section>
+  <div class="page-header">
+<h1>Reserve your place at Skint 2012</h1>
+<h3>2nd - 4th November 2012, Ashover, Derbyshire</h3>
+</div>
+
+<%= bootstrap_form_for(@reservation, html: { class: 'form-horizontal' }) do |f|%>
+  <%= f.text_field :name, label: "Your name", autofocus: true %>
+  <%= f.text_field :email %>
+  <%= f.text_field :phone_number %>
+  <%= f.text_field :dietary_requirements, help: "if any" %>
+  <%= f.select :ticket_type, Reservation::TicketType.options %>
+
+  <%= f.check_box :participate_in_fare_pool, label: 'I would like to participate in the fare pool' %>
+  <div class="control-group">
+  <div class="controls">
+    <p>The aim of a fare pool is to even out the transport costs of participants. People who have lower travel costs contribute a little more, and those with higher travel costs a bit less, in order that overall participation costs become more equal. If you tick this box, we'll contact you with more information about how it will work.</p>
+  </div>
+  </div>
+
+  <%= f.text_area :what_can_you_help_with, rows: 10, help: "see #{link_to 'how skint works', '/info'}".html_safe %>
+
+  <%= f.text_area :comments, rows: 10 %>
+
+  <%= f.select :payment_method, payment_methods, html: {class: "span3"} %>
+
+  <div class="control-group">
+  <div class="controls">
+    <p><strong>Important</strong></p>
+  <p>Your reservation is not confirmed until we receive your payment. Online payments must be received with 7 days. Postal cheque payments must be received with 14 days. If we do not receive your payment within this time, your place will be released to someone else.</p>
+  <p class="help-block"><b>UK Residents</b> - pay quickly and easiliy using our secure payment provider <b>Go Cardless</b>. The one-off payment is taken via direct debit which saves us money by avoiding credit card fees.</p>
+  <p class="help-block"><b>International customers</b> - pay using your credit card via paypal. We pay a higher fee to use paypal, so if you can, please choose another option.</p>
+  <p class="help-block"><b>Cheque</b> - as a last resort, you can post us a cheque. Details will be shown on the next page.</p>
+  </div>
+  </div>
+  <%= f.actions do %>
+    <%= f.primary 'Make reservation', disable_with: 'Reserving...' %>
+  <% end %>
+
+<% end %>
+</section>
