@@ -2,12 +2,15 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.8'
 
+gem 'rvm-capistrano'
 gem 'rdiscount'
 gem 'bootstrap_form'
 gem 'less-rails-bootstrap'
 gem 'activeadmin'
 gem 'state_machine'
 gem 'validates_email_format_of'
+gem 'capistrano'
+
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
