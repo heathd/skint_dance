@@ -10,7 +10,7 @@ gem 'activeadmin'
 gem 'state_machine'
 gem 'validates_email_format_of'
 gem 'capistrano'
-
+gem 'unicorn'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
