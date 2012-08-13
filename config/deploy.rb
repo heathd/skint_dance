@@ -20,7 +20,7 @@ role :web, "davidheath.org"                          # Your HTTP server, Apache/
 role :app, "davidheath.org"                          # This may be the same as your `Web` server
 role :db,  "davidheath.org", :primary => true # This is where Rails migrations will run
 
-after "deploy:update_code" do
+after "deploy:finalize_update" do
   run "ln -sf #{deploy_to}/#{shared_dir}/config/database.yml #{current_release}/config/database.yml"
 end
 
