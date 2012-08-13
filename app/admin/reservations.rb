@@ -1,7 +1,17 @@
 ActiveAdmin.register Reservation do
+  index do
+    column "Name", sortable: :name do |r| link_to r.name, admin_reservation_path(r) end
+    column "Email", sortable: :email do |r| link_to r.email, admin_reservation_path(r) end
+    column "Ref" do |r| r.reference end
+    column :state
+    column :ticket_type
+    column :created_at
+  end
+
   form do |f|
     f.inputs "Administration" do
       f.input :state, as: :select, collection: Reservation.state_machine.states.map(&:name)
+      f.input :payment_method, as: :select, collection: Reservation::PAYMENT_METHODS
     end
 
     f.inputs "Applicant" do
