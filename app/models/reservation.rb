@@ -78,10 +78,10 @@ class Reservation < ActiveRecord::Base
         sleeping: 0,
         non_sleeping: 0
       }
-      counts = Reservation.connection.select("select ticket_type, count(*) as count from reservations group by ticket_type")
+      counts = Reservation.group(:ticket_type).select("ticket_type, count(*) as count")
       counts.each do |record|
-        type = TicketType.find_by_name(record['ticket_type'])
-        aggregates[type.category] += record['count']
+        type = TicketType.find_by_name(record.ticket_type)
+        aggregates[type.category] += record.count
       end
       aggregates
     end
