@@ -16,6 +16,9 @@ class ReservationsController < ApplicationController
   end
 
   def success
+    if @reservation.waiting_list?
+      render :waiting_list
+    end
   end
 
 private

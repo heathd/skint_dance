@@ -38,6 +38,10 @@ class Reservation < ActiveRecord::Base
         "paypal_nonsleeping_concession")
     end
 
+    def self.find_by_name(name)
+      TicketType.all.find {|t| t.name == name}
+    end
+
     def self.options
       all.map do |type|
         [type.option_label, type.name]
@@ -57,11 +61,37 @@ class Reservation < ActiveRecord::Base
     end
 
     def option_label
-      "#{description} - #{formatted_price} (#{remaining_places} left)"
+      remaining_text = if remaining_places > 0
+        "#{remaining_places} left"
+      else
+        "waiting list"
+      end
+      "#{description} - #{formatted_price} (#{remaining_text})"
+    end
+
+    def category
+      name.include?("Non-sleeping") ? :non_sleeping : :sleeping
+    end
+
+    def self.reserved_places
+      aggregates = {
+        sleeping: 0,
+        non_sleeping: 0
+      }
+      counts = Reservation.connection.execute("select ticket_type, count(*) as count from reservations group by ticket_type")
+      counts.each do |record|
+        type = TicketType.find_by_name(record['ticket_type'])
+        aggregates[type.category] += record['count']
+      end
+      aggregates
     end
 
     def remaining_places
-      0
+      available = {
+        sleeping: 65,
+        non_sleeping: 35
+      }
+      available[category] - TicketType.reserved_places[category]
     end
   end
 
@@ -69,6 +99,17 @@ class Reservation < ActiveRecord::Base
 
   state_machine :state, :initial => :new do
     state :new
+    state :reserved
+    state :waiting_list
+    state :paid
+
+    event :reserve do
+      transition [:new, :waiting_list] => :reserved
+    end
+
+    event :add_to_waiting_list do
+      transition [:new] => :waiting_list
+    end
   end
 
   def ticket_type_object
@@ -86,11 +127,19 @@ class Reservation < ActiveRecord::Base
   def self.make_reservation(params)
     require 'securerandom'
     reservation = Reservation.new(params.merge(state: "new"))
-    reservation.reference = ::SecureRandom.hex(3)
+    reservation.reference = ::SecureRandom.urlsafe_base64(3)
     reservation.save
     if reservation.errors[:reference].any?
-      reservation.reference = ::SecureRandom.hex(4)
-      reservation.save
+      reservation.reference = ::SecureRandom.urlsafe_base64(4)
+      reservation.save!
+    end
+
+    if reservation.valid? 
+      if reservation.ticket_type_object.remaining_places > 0
+        reservation.reserve
+      else
+        reservation.add_to_waiting_list
+      end
     end
     reservation
   end
