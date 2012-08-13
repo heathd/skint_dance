@@ -18,6 +18,13 @@
   </div>
   </div>
 
+  <%= f.check_box :camping, label: 'Do you want to camp?' %>
+  <div class="control-group">
+  <div class="controls">
+    <p>It's £5 per unit per night. This is so that farmer can have a rough idea of numbers in advance. Let us know in the comments box if you'll have a tent or caravan.</p>
+  </div>
+  </div>
+
   <%= f.text_area :what_can_you_help_with, rows: 10, help: "see #{link_to 'how skint works', '/info'}".html_safe %>
 
   <%= f.text_area :comments, rows: 10 %>

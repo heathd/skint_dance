@@ -12,6 +12,8 @@ ActiveAdmin.register Reservation do
     f.inputs "Administration" do
       f.input :state, as: :select, collection: Reservation.state_machine.states.map(&:name)
       f.input :payment_method, as: :select, collection: Reservation::PAYMENT_METHODS
+      f.input :ticket_type, as: :select, collection: Reservation::TicketType.options
+      f.input :camping
     end
 
     f.inputs "Applicant" do
