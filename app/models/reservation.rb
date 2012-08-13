@@ -1,32 +1,41 @@
 # encoding: UTF-8
 class Reservation < ActiveRecord::Base
+  PAYMENT_METHODS = %w{paypal gocardless cheque}
   validates_presence_of :name, :email, :phone_number, :what_can_you_help_with
   validates_email_format_of :email
-  validates :payment_method, inclusion: {in: %w{paypal gocardless cheque}}
+  validates :payment_method, inclusion: {in: PAYMENT_METHODS}
+# paypal_full_standard
+# paypal_full_concession
+# paypal_nonsleeping_full
+# paypal_nonsleeping_concession
 
-  class TicketType < Struct.new(:name, :description, :price, :gocardless_url)
+  class TicketType < Struct.new(:name, :description, :price, :gocardless_url, :paypal_partial)
     def self.all
       types = []
       types << TicketType.new(
         "Full, standard", 
         "Full weekend with food and indoor camping, standard rate", 
         3000,
-        "https://gocardless.com/pay/VXF4PVEE")
+        "https://gocardless.com/pay/VXF4PVEE",
+        "paypal_full_standard")
       types << TicketType.new(
         "Full, concession",
         "Full weekend with food and indoor camping, really skint",
         2500,
-        "https://gocardless.com/pay/GZSJ4T37")
+        "https://gocardless.com/pay/GZSJ4T37",
+        "paypal_full_concession")
       types << TicketType.new(
         "Non-sleeping, full",
         "Full weekend with food but NO ACCOMODATION, standard rate",
         2000,
-        "https://gocardless.com/pay/EJAX31PT")
+        "https://gocardless.com/pay/EJAX31PT",
+        "paypal_nonsleeping_full")
       types << TicketType.new(
         "Non-sleeping, concession",
         "Full weekend with food but NO ACCOMODATION, really skint",
         1800,
-        "https://gocardless.com/pay/YW453Y2X")
+        "https://gocardless.com/pay/YW453Y2X",
+        "paypal_nonsleeping_concession")
     end
 
     def self.options
@@ -62,11 +71,16 @@ class Reservation < ActiveRecord::Base
     state :new
   end
 
-  def payment_link
-    if payment_method == "gocardless"
-      type = TicketType.all.find {|t| t.name == ticket_type}
-      type && type.gocardless_url
-    end
+  def ticket_type_object
+    @ticket_type_object ||= TicketType.all.find {|t| t.name == ticket_type}
+  end
+
+  def gocardless_url
+    ticket_type_object && ticket_type_object.gocardless_url
+  end
+
+  def paypal_partial
+    ticket_type_object && ticket_type_object.paypal_partial
   end
 
   def self.make_reservation(params)
@@ -87,5 +101,9 @@ class Reservation < ActiveRecord::Base
     else
       1.week
     end
+  end
+
+  def formatted_price
+    ticket_type_object && ticket_type_object.formatted_price
   end
 end

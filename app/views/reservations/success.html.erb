@@ -8,11 +8,21 @@
 <p>Your reservation reference is <strong><%= @reservation.reference %></strong></p>
 
 <% if @reservation.payment_method == "gocardless" %>
-<p><%= link_to "Pay using Go Cardless", @reservation.payment_link, class: "btn btn-large btn-primary "%></p>
+  <p><%= link_to "Pay using Go Cardless", @reservation.gocardless_url, class: "btn btn-large btn-primary "%></p>
+
+<% elsif @reservation.payment_method == 'paypal' %>
+  <%= render partial: @reservation.paypal_partial  %>
+<% else %>
+  <h2>Cheque payment</h2>
+  <p>Post a cheque payable to <strong>Skint</strong> for <strong><%= @reservation.formatted_price %></strong> to:</p>
+  <address>
+    David Heath<br/>
+    Flat 7, 14-16 Sedgwick St<br/>
+    London E9 6AE
+  </address>
 <% end %>
 
 <p>You have until <%= l @reservation.payment_deadline %> to pay for your reservation before we release your place to someone else.</p>
 
 <p>You can come back to this payment page any time by using the following link:</p>
-
 <p><%= link_to reservation_success_url @reservation.reference %></p>
