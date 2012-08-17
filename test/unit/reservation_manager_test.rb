@@ -56,6 +56,12 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal clock.now, reservation.requested_at
   end
 
+  test "make_reservation uses the provided clock to set payment_due date" do
+    clock = OpenStruct.new(now: DateTime.parse("2011-01-01 00:00"))
+    reservation = ReservationManager.new.make_reservation(reservation_params, clock)
+    assert_equal clock.now + 1.week, reservation.payment_due
+  end
+
   test "making a valid reservation decrements the available places for that resource category, but not other categories" do
     reservation_manager = ReservationManager.new
     assert_difference "reservation_manager.remaining_places(:non_sleeping)", 0 do
@@ -157,9 +163,11 @@ class ReservationManagerTest < ActiveSupport::TestCase
     reserved = reservation_manager.make_reservation(reservation_params(ticket_type: "Full, standard"), fixed_clock('2011-01-01'))
     waiting = reservation_manager.make_reservation(reservation_params(ticket_type: "Full, standard"), fixed_clock('2011-01-02'))
     reserved.cancel
-    assert reservation_manager.allocate_place_to(waiting.waiting_list_entries.first)
+    assert reservation_manager.allocate_place_to(waiting.waiting_list_entries.first, fixed_clock('2011-01-04'))
     assert_equal 0, WaitingListEntry.count
-    assert_equal "reserved", waiting.reload.state
+    waiting.reload
+    assert_equal "reserved", waiting.state
+    assert_equal DateTime.parse('2011-01-04') + 1.week, waiting.payment_due
   end
 
 end

@@ -38,6 +38,7 @@ class ReservationManager
     if reservation.save
       if remaining_places(ticket_type.resource_category) > 0
         reservation.reserve
+        reservation.set_payment_due!(clock)
       else
         reservation.add_to_waiting_list(reservation.resource_category)
       end
@@ -48,10 +49,10 @@ class ReservationManager
     reservation
   end
 
-  def allocate_place_to(waiting_list_entry)
+  def allocate_place_to(waiting_list_entry, clock = DateTime)
     Reservation.connection.transaction do
       if places_available_to_waiting_list(waiting_list_entry.resource_category) > 0
-        waiting_list_entry.reservation.reserve
+        waiting_list_entry.reservation.reserve(clock)
         waiting_list_entry.delete
         return true
       end

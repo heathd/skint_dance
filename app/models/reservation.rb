@@ -61,11 +61,17 @@ class Reservation < ActiveRecord::Base
     joins(:ticket_type).where("ticket_types.resource_category" => resource_category)
   end
 
-  def payment_deadline
-    created_at + if payment_method == 'cheque'
+  def reserve(clock = DateTime)
+    super
+    set_payment_due!(clock)
+  end
+
+  def set_payment_due!(clock = DateTime)
+    self.payment_due = clock.now + if payment_method == 'cheque'
       2.weeks
     else
       1.week
     end
+    save
   end
 end

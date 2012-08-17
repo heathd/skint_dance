@@ -28,6 +28,7 @@ ActiveAdmin.register Reservation do
       f.input :dietary_requirements
       f.input :comments
       f.input :requested_at, disabled: true
+      f.input :payment_due
     end
 
     f.buttons

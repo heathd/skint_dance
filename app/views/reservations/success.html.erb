@@ -22,7 +22,7 @@
   </address>
 <% end %>
 
-<p>You have until <%= l @reservation.payment_deadline %> to pay for your reservation before we release your place to someone else.</p>
+<p>You have until <%= l @reservation.payment_due %> to pay for your reservation before we release your place to someone else.</p>
 
 <p>You can come back to this payment page any time by using the following link:</p>
 <p><%= link_to reservation_success_url @reservation.reference %></p>
