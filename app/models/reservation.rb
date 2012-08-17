@@ -4,7 +4,7 @@ class Reservation < ActiveRecord::Base
   delegate [:gocardless_url, :paypal_partial, :formatted_price, :resource_category] => :ticket_type
 
   belongs_to :ticket_type
-  has_many :waiting_list_entries
+  has_many :waiting_list_entries, dependent: :destroy
 
   PAYMENT_METHODS = %w{paypal gocardless cheque}
   validates_presence_of :name, :email, :phone_number, :what_can_you_help_with
