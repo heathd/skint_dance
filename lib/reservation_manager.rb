@@ -15,11 +15,11 @@ class ReservationManager
   end
 
   def remaining_places(resource_category)
-    available_places(resource_category) - reserved_places(resource_category)
+    [0, places_available_to_waiting_list(resource_category) - cancelled_places(resource_category)].max
   end
 
   def places_available_to_waiting_list(resource_category)
-    remaining_places(resource_category) + cancelled_places(resource_category)
+    available_places(resource_category) - reserved_places(resource_category)
   end
 
   def cancelled_places(resource_category)
@@ -48,8 +48,18 @@ class ReservationManager
     reservation
   end
 
+  def allocate_place_to(waiting_list_entry)
+    Reservation.connection.transaction do
+      if places_available_to_waiting_list(waiting_list_entry.resource_category) > 0
+        waiting_list_entry.reservation.reserve
+        waiting_list_entry.delete
+        return true
+      end
+    end
+  end
+
   def waiting_list(resource_category)
-    Reservation.waiting_for(resource_category).order("waiting_list_entries.added_at asc")
+    WaitingListEntry.in_resource_category(resource_category).order("waiting_list_entries.added_at asc")
   end
 
   def find_reservation(reference)

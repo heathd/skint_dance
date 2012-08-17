@@ -34,7 +34,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.reserved
-    where("state not in (?)", [:new, :waiting_list])
+    where(state: [:reserved, :paid, :payment_cleared])
   end
 
   def self.cancelled
@@ -42,7 +42,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def remove_from_waiting_list
-    waiting_list_entries.delete_all
+    waiting_list_entries.destroy_all
   end
   
   def add_to_waiting_list(waiting_list_resource_category)

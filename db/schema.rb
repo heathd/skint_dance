@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(:version => 20120815234009) do
     t.string   "dietary_requirements"
     t.text     "comments"
     t.datetime "requested_at",             :null => false
+    t.datetime "updated_at",               :null => false
     t.boolean  "camping"
     t.integer  "ticket_type_id"
   end

@@ -89,7 +89,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
     end
   end
 
-  test "cancelling a reserved place does releases an available waiting list place" do
+  test "cancelling a reserved place does release the place to the waiting list" do
     reservation_manager = ReservationManager.new
     reservation = reservation_manager.make_reservation(reservation_params)
     assert_difference "reservation_manager.places_available_to_waiting_list(reservation.resource_category)", 1 do
@@ -103,7 +103,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
       reservation_manager.make_reservation(reservation_params, fixed_clock('2011-01-01')),
       reservation_manager.make_reservation(reservation_params, fixed_clock('2011-01-02')),
     ]
-    assert_equal reservations, reservation_manager.waiting_list(:sleeping)
+    assert_equal reservations, reservation_manager.waiting_list(:sleeping).map(&:reservation)
   end
 
   test "waiting_list ignores cancelled places" do
@@ -120,7 +120,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
       reservation_manager.make_reservation(reservation_params, fixed_clock('2011-01-01')),
       reservation_manager.make_reservation(reservation_params, fixed_clock('2011-01-02')),
     ]
-    assert_equal reservations[1..1], reservation_manager.waiting_list(:sleeping)
+    assert_equal reservations[1..1], reservation_manager.waiting_list(:sleeping).map(&:reservation)
   end
 
   test "waiting_list for sleeping places includes people who reserved successfully for non_sleeping places" do
@@ -130,7 +130,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
       reservation_manager.make_reservation(reservation_params(ticket_type: "Non-sleeping, full"), fixed_clock('2011-01-02')),
       reservation_manager.make_reservation(reservation_params(ticket_type: "Full, standard"), fixed_clock('2011-01-03'))
     ]
-    assert_equal reservations[1..2], reservation_manager.waiting_list(:sleeping)
+    assert_equal reservations[1..2], reservation_manager.waiting_list(:sleeping).map(&:reservation)
   end
 
   test "waiting_list for sleeping places includes people who are waiting for non_sleeping places" do
@@ -139,7 +139,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
       reservation_manager.make_reservation(reservation_params(ticket_type: "Full, standard"), fixed_clock('2011-01-01')),
       reservation_manager.make_reservation(reservation_params(ticket_type: "Non-sleeping, full"), fixed_clock('2011-01-02')),
     ]
-    assert_equal reservations[1..1], reservation_manager.waiting_list(:sleeping)
+    assert_equal reservations[1..1], reservation_manager.waiting_list(:sleeping).map(&:reservation)
   end
 
   test "waiting_list for sleeping places excludes people who reserved successfully for non_sleeping places before sleeping places ran out" do
@@ -149,8 +149,17 @@ class ReservationManagerTest < ActiveSupport::TestCase
       reservation_manager.make_reservation(reservation_params(ticket_type: "Full, standard"), fixed_clock('2011-01-02')),
       reservation_manager.make_reservation(reservation_params(ticket_type: "Non-sleeping, full"), fixed_clock('2011-01-03'))
     ]
-    p WaitingListEntry.all
-    assert_equal reservations[2..2], reservation_manager.waiting_list(:sleeping)
+    assert_equal reservations[2..2], reservation_manager.waiting_list(:sleeping).map(&:reservation)
+  end
+
+  test "can allocate a place to a waiting list entry" do
+    reservation_manager = ReservationManager.new(available_places: {sleeping: 1})
+    reserved = reservation_manager.make_reservation(reservation_params(ticket_type: "Full, standard"), fixed_clock('2011-01-01'))
+    waiting = reservation_manager.make_reservation(reservation_params(ticket_type: "Full, standard"), fixed_clock('2011-01-02'))
+    reserved.cancel
+    assert reservation_manager.allocate_place_to(waiting.waiting_list_entries.first)
+    assert_equal 0, WaitingListEntry.count
+    assert_equal "reserved", waiting.reload.state
   end
 
 end

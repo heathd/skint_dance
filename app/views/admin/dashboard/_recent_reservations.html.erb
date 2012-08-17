@@ -1,0 +1,28 @@
+<ul>
+  <% Reservation.in_resource_category(resource_category).group(:state).select("count(*) as count, state").order("state asc").each do |reservation_count_by_state| %>
+    <li><%= reservation_count_by_state.state.humanize %>: <%= reservation_count_by_state.count %>
+  <% end %>
+  <li>Remaining places: <%= RESERVATION_MANAGER.remaining_places(resource_category) %></li>
+</ul>
+
+<h3>Recent reservations</h3>
+<table class="index_table">
+  <thead>
+    <th>Name</th>
+    <th>Updated at</th>
+    <th>State</th>
+  </thead>
+  <% Reservation.in_resource_category(resource_category).order("updated_at desc").limit(5).map do |reservation| %>
+    <tr>
+      <td>
+        <%= link_to(reservation.name, admin_reservation_path(reservation)) %>
+      </td>
+      <td>
+        <%= l reservation.updated_at %>
+      </td>
+      <td>
+        <%= reservation.state %>
+      </td>
+    </tr>
+  <% end %>
+</table>
