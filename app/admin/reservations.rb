@@ -38,7 +38,7 @@ end
 ActiveAdmin.register WaitingListEntry do
   filter :resource_category, label: "Type", as: :select, collection: %w{sleeping non_sleeping}
   index do
-    column "Name", sortable: :name do |w| link_to w.reservation.name, admin_waiting_list_entry_path(w) end
+    column "Name" do |w| link_to w.reservation.name, admin_waiting_list_entry_path(w) end
     column "Email", sortable: :email do |w| link_to w.reservation.email, admin_waiting_list_entry_path(w) end
     column "Date", :added_at
     column "Type", :resource_category
