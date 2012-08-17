@@ -1,0 +1,28 @@
+<h3>Waiting list</h3>
+
+<% places_available = RESERVATION_MANAGER.places_available_to_waiting_list(resource_category) %>
+<p><%= pluralize(places_available, "place") %> available to waiting list.</p>
+
+<table class="index_table">
+  <thead>
+    <th>Position</th>
+    <th>Name</th>
+    <th>Date requested</th>
+  </thead>
+  <% RESERVATION_MANAGER.waiting_list(resource_category).limit(5).map.with_index do |waiting_list_entry, i| %>
+    <tr>
+      <td><%= i + 1%></td>
+      <td>
+        <%= link_to(waiting_list_entry.name, admin_waiting_list_entry_path(waiting_list_entry)) %>
+      </td>
+      <td>
+        <%= l waiting_list_entry.added_at %>
+      </td>
+      <td>
+        <% if i < places_available %>
+          <%= button_to("Allocate place", allocate_admin_waiting_list_entry_path(waiting_list_entry)) %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120813082308) do
+ActiveRecord::Schema.define(:version => 20120815234009) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -49,7 +49,6 @@ ActiveRecord::Schema.define(:version => 20120813082308) do
   create_table "reservations", :force => true do |t|
     t.string   "reference"
     t.string   "state"
-    t.string   "ticket_type"
     t.string   "payment_method"
     t.string   "payment_reference"
     t.string   "name"
@@ -59,11 +58,27 @@ ActiveRecord::Schema.define(:version => 20120813082308) do
     t.boolean  "participate_in_fare_pool"
     t.string   "dietary_requirements"
     t.text     "comments"
-    t.datetime "created_at",               :null => false
+    t.datetime "requested_at",             :null => false
     t.datetime "updated_at",               :null => false
     t.boolean  "camping"
+    t.integer  "ticket_type_id"
   end
 
   add_index "reservations", ["reference"], :name => "index_reservations_on_reference", :unique => true
+
+  create_table "ticket_types", :force => true do |t|
+    t.string  "name"
+    t.string  "description"
+    t.integer "price_in_pence"
+    t.string  "gocardless_url"
+    t.string  "paypal_partial"
+    t.string  "resource_category"
+  end
+
+  create_table "waiting_list_entries", :force => true do |t|
+    t.integer  "reservation_id"
+    t.string   "resource_category"
+    t.datetime "added_at"
+  end
 
 end
