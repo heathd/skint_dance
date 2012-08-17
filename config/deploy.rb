@@ -24,6 +24,10 @@ after "deploy:finalize_update" do
   run "ln -sf #{deploy_to}/#{shared_dir}/config/database.yml #{current_release}/config/database.yml"
 end
 
+after "deploy:restart" do
+  run "sudo restart skint_dance || sudo start skint_dance"
+end
+
 # If you are using Passenger mod_rails uncomment this:
 # namespace :deploy do
 #   task :start do ; end
