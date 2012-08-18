@@ -21,6 +21,7 @@ class Reservation < ActiveRecord::Base
     end
     state :payment_cleared
     state :cancelled
+    state :payment_on_arrival
 
     event :reserve do
       transition [:new, :waiting_list] => :reserved
@@ -34,7 +35,7 @@ class Reservation < ActiveRecord::Base
   end
 
   def self.reserved
-    where(state: [:reserved, :paid, :payment_cleared])
+    where(state: [:reserved, :paid, :payment_cleared, :payment_on_arrival])
   end
 
   def self.cancelled
