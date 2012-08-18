@@ -13,7 +13,7 @@ class PaymentReminder < ActionMailer::Base
   def self.remind_unpaid
     RESERVATION_MANAGER.unpaid.each do |reservation|
       puts "Sending reminder to #{reservation.name} #{reservation.email}"
-      remind(reservation)
+      remind(reservation).deliver
     end
   end
 
