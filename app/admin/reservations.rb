@@ -6,6 +6,7 @@ ActiveAdmin.register Reservation do
     column :state
     column :ticket_type
     column :requested_at
+    column :payment_due
   end
 
   form do |f|

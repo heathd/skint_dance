@@ -63,6 +63,10 @@ class ReservationManager
     WaitingListEntry.in_resource_category(resource_category).order("waiting_list_entries.added_at asc")
   end
 
+  def unpaid
+    Reservation.where(state: :reserved)
+  end
+
   def find_reservation(reference)
     Reservation.find_by_reference(reference)
   end

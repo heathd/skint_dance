@@ -1,0 +1,33 @@
+Hi <%= @reservation.name %>,
+
+Thanks for making a reservation for Skint. The place you reserved was:
+  <%= @reservation.ticket_type.description %>
+  Price: <%= @reservation.ticket_type.formatted_price %>
+
+We haven't yet received your payment, so this is just a friendly reminder that
+you need to make sure to pay us by <%= l @reservation.payment_due %>,
+otherwise we may make your place available to someone else.
+
+There's a chance that you may have already made your payment and we just
+haven't noticed it yet (we have to manually keep it updated). If you received
+this email, but you think that you have paid then please let us know.
+
+<% if @reservation.payment_method == 'cheque' %>
+You can pay by posting us a cheque for the appropriate amount, made payable to
+'Skint', to:
+
+Skint c/o David Heath
+Flat 7, 14-16 Sedgwick St
+London E9 6AE
+<% else %>
+You can make your payment using this link:
+
+  <%= reservation_success_url(@reservation.reference) %>
+<% end %>
+
+If you have any problems or questions, don't hesitate to drop us an email on
+skint.dance@gmail.com.
+
+Best wishes
+
+The Skint Team
