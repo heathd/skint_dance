@@ -11,17 +11,8 @@ gem 'state_machine'
 gem 'validates_email_format_of'
 gem 'capistrano'
 gem 'unicorn'
-
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
-
-group :development, :test do
-  gem 'sqlite3'
-end
-
-group :production do
-  gem 'mysql2'
-end
+gem 'gocardless'
+gem 'mysql2'
 
 # Gems used only for assets and not required
 # in production environments by default.

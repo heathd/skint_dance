@@ -5,6 +5,7 @@ class Reservation < ActiveRecord::Base
 
   belongs_to :ticket_type
   has_many :waiting_list_entries, dependent: :destroy
+  has_many :gocardless_bills
 
   PAYMENT_METHODS = %w{paypal gocardless cheque}
   validates_presence_of :name, :email, :phone_number, :what_can_you_help_with
@@ -74,5 +75,13 @@ class Reservation < ActiveRecord::Base
       1.week
     end
     save
+  end
+
+  def total_paid_in_pence
+    gocardless_bills.sum(&:amount_in_pence)
+  end
+
+  def balance
+    ticket_type.price_in_pence - total_paid_in_pence
   end
 end

@@ -1,6 +1,5 @@
 require 'test_helper'
 require_relative "../../lib/reservation_manager"
-require_relative "../../db/seeds/ticket_types"
 
 class ReservationManagerTest < ActiveSupport::TestCase
   def reservation_params(overrides = {})
@@ -169,5 +168,4 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal "reserved", waiting.state
     assert_equal DateTime.parse('2011-01-04') + 1.week, waiting.payment_due
   end
-
 end

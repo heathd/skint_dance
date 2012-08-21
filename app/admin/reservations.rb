@@ -1,26 +1,49 @@
 ActiveAdmin.register Reservation do
   index do
-    column "Name", sortable: :name do |r| link_to r.name, admin_reservation_path(r) end
-    column "Email", sortable: :email do |r| link_to r.email, admin_reservation_path(r) end
+    column "Name", sortable: :name do |r| link_to r.name, edit_admin_reservation_path(r) end
+    column :email
     column "Ref" do |r| r.reference end
     column :state
     column :ticket_type
     column :requested_at
     column :payment_due
+    column :balance
+  end
+
+  show do |reservation|
+    attributes_table do
+      row :name
+      row :email
+      row :phone_number
+      row :reference
+      row :state
+      row :payment_method
+      row :ticket_type
+      row :camping
+      row :what_can_you_help_with
+      row :participate_in_fare_pool
+      row :dietary_requirements
+      row :comments
+      row :requested_at
+      row :updated_at
+      row :payment_due
+      row :balance
+    end
+    active_admin_comments
   end
 
   form do |f|
+    f.inputs "Applicant" do
+      f.input :name
+      f.input :email
+      f.input :phone_number
+    end
+
     f.inputs "Administration" do
       f.input :state, as: :select, collection: Reservation.state_machine.states.map(&:name)
       f.input :payment_method, as: :select, collection: Reservation::PAYMENT_METHODS
       f.input :ticket_type, as: :select, collection: TicketType.all
       f.input :camping
-    end
-
-    f.inputs "Applicant" do
-      f.input :name
-      f.input :email
-      f.input :phone_number
     end
 
     f.inputs "Other" do
@@ -50,5 +73,34 @@ ActiveAdmin.register WaitingListEntry do
     RESERVATION_MANAGER.allocate_place_to(waiting_list_entry)
     redirect_to admin_reservation_path(waiting_list_entry.reservation), notice: "Place allocated"
   end
+end
 
+ActiveAdmin.register GocardlessBill do
+  index do
+    column :user_first_name do |b| link_to b.user_first_name, edit_admin_gocardless_bill_path(b) end
+    column :user_last_name
+    column :user_email
+    column :reservation, sortable: "reservation_id"
+    column :amount
+    column "Ticket", :name
+    column :status
+  end
+
+  form do |f|
+    f.inputs "Reservation" do
+      f.input :reservation, as: :select, collection: (Reservation.order(:name).map do |r| 
+        ["#{r.name} - #{r.ticket_type.name} (#{r.ticket_type.formatted_price}) - #{r.state}", r.id]
+      end)
+    end
+
+    f.inputs "Transaction details" do
+      f.input :user_first_name, disabled: true
+      f.input :user_last_name, disabled: true
+      f.input :user_email, disabled: true
+      f.input :amount, disabled: true
+      f.input :name, disabled: true
+    end
+
+    f.buttons
+  end
 end
