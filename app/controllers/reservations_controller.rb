@@ -7,7 +7,7 @@ class ReservationsController < ApplicationController
 
   def create
     reservation_params = params[:reservation]
-    @reservation = Reservation.make_reservation(reservation_params)
+    @reservation = RESERVATION_MANAGER.make_reservation(reservation_params)
     if @reservation.valid?
       redirect_to reservation_success_path(@reservation.reference)
     else
