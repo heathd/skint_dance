@@ -49,7 +49,7 @@ class Reservation < ActiveRecord::Base
   
   def add_to_waiting_list(waiting_list_resource_category)
     connection.transaction do
-      state = :waiting_list
+      self.state = "waiting_list" if waiting_list_resource_category == self.resource_category
       waiting_list_entries.create(resource_category: waiting_list_resource_category, added_at: requested_at)
       save!
     end

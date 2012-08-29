@@ -86,6 +86,14 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal 0, reservation_manager.remaining_places(reservation.resource_category)
   end
 
+  test "making a valid reservation when no places left adds the place to the waiting list" do
+    reservation_manager = ReservationManager.new(available_places: {sleeping: 0, non_sleeping: 0})
+    reservation = reservation_manager.make_reservation(reservation_params)
+    assert reservation.valid?
+    assert_equal "waiting_list", reservation.state
+    assert_equal [reservation], reservation_manager.waiting_list(reservation.resource_category).map(&:reservation)
+  end
+
   test "cancelling a reserved place does not release a place to general signups" do
     reservation_manager = ReservationManager.new
     reservation = reservation_manager.make_reservation(reservation_params)
@@ -136,6 +144,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
       reservation_manager.make_reservation(reservation_params(ticket_type: "Full, standard"), fixed_clock('2011-01-03'))
     ]
     assert_equal reservations[1..2], reservation_manager.waiting_list(:sleeping).map(&:reservation)
+    assert_equal "reserved", reservations[1].reload.state
   end
 
   test "waiting_list for sleeping places includes people who are waiting for non_sleeping places" do
