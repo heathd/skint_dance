@@ -19,18 +19,21 @@
   <%= f.text_field :phone_number %>
 
   <div class="control-group <%= @day_ticket_order.errors[:ticket_types].present? && "error" %>">
-  <div class="controls">
-    <p>Day tickets do not include any meals/food. </p>
-  </div>
-  <label class="control-label" for="day_ticket_order_ticket_types">Tickets</label>
-  <div class="controls">
-    <% TicketType.day.each do |ticket_type| %>
-      <%= content_tag :label do %>
-        <%= check_box_tag("day_ticket_order[ticket_types][#{ticket_type.name.parameterize}]") %>
-        <%= ticket_type.description %> - <%= ticket_type.formatted_price %>
+    <div class="controls">
+      <p>Day tickets do not include any meals, food or accomodation. </p>
+    </div>
+    <label class="control-label" for="day_ticket_order_ticket_types">Tickets</label>
+    <div class="controls">
+      <% TicketType.day.each do |ticket_type| %>
+        <%= content_tag :label do %>
+          <%= check_box_tag("day_ticket_order[ticket_types][#{ticket_type.name.parameterize}]") %>
+          <%= ticket_type.description %> - <%= ticket_type.formatted_price %>
+        <% end %>
       <% end %>
-    <% end %>
-  </div>
+      <p style="margin-top: 1em">Want tickets for for <b>more than one person</b>? <br />
+        <span style="font-size: 150%">&#9758;</span>
+        Please place a separate order for each person (sorry!)</p>
+    </div>
   </div>
 
   <%= f.check_box :camping, label: 'Do you want to camp?' %>
