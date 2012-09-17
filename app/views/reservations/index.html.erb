@@ -9,7 +9,7 @@
   <%= f.text_field :email %>
   <%= f.text_field :phone_number %>
   <%= f.text_field :dietary_requirements, help: "if any" %>
-  <%= f.select :ticket_type, TicketType.options, help: "Non-accomodation place also means you're on the waiting list for an accomodation ticket" %>
+  <%= f.select :ticket_type, TicketType.weekend.map { |type| [type.option_label, type.name] }, help: "Non-accomodation place also means you're on the waiting list for an accomodation ticket" %>
 
   <%= f.check_box :participate_in_fare_pool, label: 'I would like to participate in the fare pool' %>
   <div class="control-group">

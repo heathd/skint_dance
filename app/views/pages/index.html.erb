@@ -11,22 +11,13 @@
 
 <p>A wonderful low-cost weekend in Derbyshire, with music and dance from across Europe. Workshops, sessions, bals, lovely food, friendly atmosphere and beautiful countryside nearby!</p>
 
-
-
-<% if (RESERVATION_MANAGER.remaining_places(:sleeping) + RESERVATION_MANAGER.remaining_places(:non_sleeping)) > 0 %>
-  <h2>Bookings now open</h2>
-  <p>
-    <%= link_to "Make your booking", reservations_path, class:'btn btn-large btn-primary' %>
-    or <a href="info.html">find out more about Skint</a>
-  </p>
-<% else %>
-  <h2>Bookings</h2>
-  <p>Sorry, Skint weekend tickets are fully booked! You can join our waiting list. We'll also have day tickets available for sale nearer the date. </p>
-  <p>
-    <%= link_to "Join waiting list", reservations_path, class:'btn btn-large btn-primary' %>
-    or <a href="info.html">find out more about Skint</a>
-  </p>
-<% end %>
+<h2>Bookings</h2>
+<p>Sorry, Skint weekend tickets are fully booked! </p>
+<p>But you can buy day tickets:</p>
+<p>
+  <%= link_to "Buy day tickets", day_ticket_orders_path, class:'btn btn-large btn-primary' %>
+  or <a href="info.html">find out more about Skint</a>
+</p>
 
 <!-- Begin MailChimp Signup Form -->
 <div id="mc_embed_signup">

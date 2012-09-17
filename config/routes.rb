@@ -4,6 +4,9 @@ SkintDance::Application.routes.draw do
 
   devise_for :admin_users, ActiveAdmin::Devise.config
 
+  resources :day_ticket_orders, path: "day_tickets" do
+  end
+
   resources :reservations do
     get :success
   end

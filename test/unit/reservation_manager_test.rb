@@ -27,6 +27,13 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal 35, @reservation_manager.available_places(:non_sleeping)
   end
 
+  test "default reservation manager has day tickets" do
+    assert_equal 80, @reservation_manager.available_places(:friday_evening)
+    assert_equal 30, @reservation_manager.available_places(:saturday_daytime)
+    assert_equal 80, @reservation_manager.available_places(:saturday_evening)
+    assert_equal 30, @reservation_manager.available_places(:sunday_daytime)
+  end
+
   test "can specify available places in constructor" do
     r = ReservationManager.new(available_places: {sleeping: 1, non_sleeping: 2})
     assert_equal 1, r.available_places(:sleeping)

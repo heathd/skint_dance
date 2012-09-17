@@ -1,3 +1,4 @@
+
 module ApplicationHelper
   def markdown_to_html(&block)
     content = capture(&block)

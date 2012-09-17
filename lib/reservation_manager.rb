@@ -6,7 +6,11 @@ class ReservationManager
   def self.default_available_places
     {
       sleeping: 65,
-      non_sleeping: 35
+      non_sleeping: 35,
+      friday_evening: 80,
+      saturday_daytime: 30,
+      saturday_evening: 80,
+      sunday_daytime: 30
     }
   end
 
@@ -47,6 +51,13 @@ class ReservationManager
       end
     end
     reservation
+  end
+
+  def place_day_ticket_order(params, clock = DateTime)
+    ticket_types = TicketType.find_all((params[:ticket_types] || {}).keys)
+    order = DayTicketOrder.new(params.merge(state: "new", reference: random_reference, ticket_types: ticket_types))
+    order.save
+    order
   end
 
   def allocate_place_to(waiting_list_entry, clock = DateTime)

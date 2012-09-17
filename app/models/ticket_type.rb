@@ -2,9 +2,17 @@
 class TicketType < ActiveRecord::Base
   validates :resource_category, :format => { :with => /\A[a-zA-Z_]+\z/ }
 
-  def self.options
-    all.map do |type|
-      [type.option_label, type.name]
+  def self.weekend
+    where(resource_category: %w{sleeping non_sleeping})
+  end
+
+  def self.day
+    where(resource_category: %w{friday_evening saturday_daytime saturday_evening sunday_daytime})
+  end
+
+  def self.find_all(types)
+    types.map do |param|
+      TicketType.all.find {|t| param == t.name.parameterize } or raise "Couldn't find ticket type #{param}"
     end
   end
 
@@ -22,5 +30,7 @@ class TicketType < ActiveRecord::Base
       "waiting list"
     end
     "#{description} - #{formatted_price} (#{remaining_text})"
+  rescue
+    description
   end
 end

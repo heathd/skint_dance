@@ -1,0 +1,60 @@
+<section>
+  <div class="page-header">
+<h1>Reserve day tickets at Skint 2012</h1>
+<h3>2nd - 4th November 2012, Ashover, Derbyshire</h3>
+</div>
+
+<%= bootstrap_form_for(@day_ticket_order, html: { class: 'form-horizontal' }) do |f|%>
+  <div class="control-group">
+    <div class="controls">
+      <h2>Important</h2>
+      <p>Day tickets do not include any meals/food</p>
+      <p>There <b>will not be space</b> in the hall for you to eat or prepare food you may bring yourself.</p>
+      <p>But don't worry! There are <a href="http://goo.gl/maps/RKUyO">several lovely pubs</a> in the village nearby serving food. </p>
+    </div>
+  </div>
+
+  <%= f.text_field :name, label: "Your name", autofocus: true %>
+  <%= f.text_field :email %>
+  <%= f.text_field :phone_number %>
+
+  <div class="control-group <%= @day_ticket_order.errors[:ticket_types].present? && "error" %>">
+  <div class="controls">
+    <p>Day tickets do not include any meals/food. </p>
+  </div>
+  <label class="control-label" for="day_ticket_order_ticket_types">Tickets</label>
+  <div class="controls">
+    <% TicketType.day.each do |ticket_type| %>
+      <%= content_tag :label do %>
+        <%= check_box_tag("day_ticket_order[ticket_types][#{ticket_type.name.parameterize}]") %>
+        <%= ticket_type.description %> - <%= ticket_type.formatted_price %>
+      <% end %>
+    <% end %>
+  </div>
+  </div>
+
+  <%= f.check_box :camping, label: 'Do you want to camp?' %>
+  <div class="control-group">
+  <div class="controls">
+    <p>This is just so we can let the campsite have an idea of numbers. We don't take payment for the campsite, you'll pay them directly. It's £5 per unit per night. Let us know in the comments box if you'll have a tent or caravan.</p>
+  </div>
+  </div>
+
+  <%= f.text_area :what_can_you_help_with, rows: 10, help: "see #{link_to 'how skint works', '/info'}".html_safe %>
+
+  <%= f.text_area :comments, rows: 10 %>
+
+  <div class="control-group">
+  <div class="controls">
+    <p><strong>Important</strong></p>
+  <p>Your order is not confirmed until we receive your payment. </p>
+  <p class="help-block"><b>UK Residents</b> - pay quickly and easiliy using our secure payment provider <b>Go Cardless</b>. The one-off payment is taken via direct debit which saves us money by avoiding credit card fees.</p>
+  <p class="help-block"><b>Others</b> - if you are unable to pay in advance, you can also pay for your tickets on arrival. Advance payment is preferred if possible, as it saves us administration overhead, thanks!</p>
+  </div>
+  </div>
+  <%= f.actions do %>
+    <%= f.primary 'Place order', disable_with: 'Ordering...' %>
+  <% end %>
+
+<% end %>
+</section>

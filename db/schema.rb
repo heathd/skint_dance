@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120820225201) do
+ActiveRecord::Schema.define(:version => 20120916215840) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -45,6 +45,26 @@ ActiveRecord::Schema.define(:version => 20120820225201) do
 
   add_index "admin_users", ["email"], :name => "index_admin_users_on_email", :unique => true
   add_index "admin_users", ["reset_password_token"], :name => "index_admin_users_on_reset_password_token", :unique => true
+
+  create_table "day_ticket_order_ticket_types", :force => true do |t|
+    t.integer "day_ticket_order_id"
+    t.integer "ticket_type_id"
+  end
+
+  create_table "day_ticket_orders", :force => true do |t|
+    t.string   "reference"
+    t.string   "state"
+    t.string   "name"
+    t.string   "email"
+    t.string   "phone_number"
+    t.text     "what_can_you_help_with"
+    t.boolean  "camping"
+    t.text     "comments"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "day_ticket_orders", ["reference"], :name => "index_day_ticket_orders_on_reference", :unique => true
 
   create_table "gocardless_bills", :force => true do |t|
     t.string   "gocardless_id"

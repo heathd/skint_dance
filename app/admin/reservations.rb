@@ -59,6 +59,52 @@ ActiveAdmin.register Reservation do
   end
 end
 
+ActiveAdmin.register DayTicketOrder do
+  show do |order|
+    attributes_table do
+      row :name
+      row :email
+      row :phone_number
+      row :reference
+      row :state
+      row :ticket_types do
+        order.ticket_types.map(&:name).join(", ")
+      end
+      row :camping
+      row :what_can_you_help_with
+      row :comments
+      row :created_at
+      row :updated_at
+      row :balance do
+        order.balance
+      end
+    end
+    active_admin_comments
+  end
+
+  form do |f|
+    f.inputs "Applicant" do
+      f.input :name
+      f.input :email
+      f.input :phone_number
+    end
+
+    f.inputs "Administration" do
+      f.input :state, as: :select, collection: Reservation.state_machine.states.map(&:name)
+      f.input :ticket_types, as: :select, collection: TicketType.day
+      f.input :camping
+    end
+
+    f.inputs "Other" do
+      f.input :what_can_you_help_with
+      f.input :comments
+    end
+
+    f.buttons
+  end
+
+end
+
 ActiveAdmin.register WaitingListEntry do
   filter :resource_category, label: "Type", as: :select, collection: %w{sleeping non_sleeping}
   index do
@@ -104,3 +150,4 @@ ActiveAdmin.register GocardlessBill do
     f.buttons
   end
 end
+
