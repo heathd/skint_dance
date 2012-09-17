@@ -10,7 +10,8 @@ development:
   reconnect: false
   pool: 5
   timeout: 5000
-  username: root
+  username: <%= ENV['SKINT_DANCE_MYSQL_USERNAME'] %>
+  password: <%= ENV['SKINT_DANCE_MYSQL_PASSWORD'] %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -22,7 +23,8 @@ test:
   reconnect: false
   pool: 5
   timeout: 5000
-  username: root
+  username: <%= ENV['SKINT_DANCE_MYSQL_USERNAME'] %>
+  password: <%= ENV['SKINT_DANCE_MYSQL_PASSWORD'] %>
 
 production:
   adapter: mysql2
