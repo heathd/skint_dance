@@ -1,0 +1,23 @@
+Hi <%= @day_ticket_order.name %>,
+
+Thanks for ordering Skint day tickets. You requested the following:
+  
+  <% @day_ticket_order.ticket_types.each do |type| %>
+  <%= type.description %> - <%= type.formatted_price %>
+  <% end %>
+
+If you want tickets for more than one person, you'll need to place a separate
+order for each person.
+
+To confirm your order, please pay online using this link:
+
+  <%= day_ticket_order_url(@day_ticket_order) %>
+
+You can also pay on arrival (but advance payment is preferred if you can).
+
+If you have any problems or questions, don't hesitate to drop us an email on
+skint.dance@gmail.com.
+
+Best wishes
+
+The Skint Team
