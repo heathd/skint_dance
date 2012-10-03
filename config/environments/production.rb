@@ -62,6 +62,11 @@ SkintDance::Application.configure do
     enable_starttls_auto: true
   }
 
+  config.middleware.use ExceptionNotifier,
+    :email_prefix => "[Skint Dance Error] ",
+    :sender_address => %{"Rails" <skint.dance@gmail.com> },
+    :exception_recipients => %w{dgheath21@gmail.com}
+    
   # Enable threaded mode
   # config.threadsafe!
 
