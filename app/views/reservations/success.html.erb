@@ -22,7 +22,11 @@
   </address>
 <% end %>
 
-<p>You have until <%= l @reservation.payment_due %> to pay for your reservation before we release your place to someone else.</p>
+<% if @reservation.payment_due.present? %>
+  <p>You have until <%= l @reservation.payment_due %> to pay for your reservation before we release your place to someone else.</p>
+<% else %>
+  <p>We'd be grateful if you could make your payment as soon as you can, thanks!</p>
+<% end %>
 
 <p>You can come back to this payment page any time by using the following link:</p>
 <p><%= link_to reservation_success_url @reservation.reference %></p>
