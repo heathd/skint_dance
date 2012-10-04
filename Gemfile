@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.8'
 
-gem 'exception_notification', require: 'exception_notifier'
 gem 'rvm-capistrano'
 gem 'rdiscount'
 gem 'bootstrap_form'
@@ -14,6 +13,7 @@ gem 'capistrano'
 gem 'unicorn'
 gem 'gocardless'
 gem 'mysql2'
+gem 'exception_notification', require: 'exception_notifier'
 
 # Gems used only for assets and not required
 # in production environments by default.
