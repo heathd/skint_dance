@@ -6,7 +6,7 @@ class Reporter
       data = self.send(type.to_sym)
       filename = "#{type}.csv"
       writer = CSV.open(filename, 'w')
-      data.each do { |row| writer << row }
+      data.each { |row| writer << row }
       writer.close
       puts "Wrote #{filename}"
     end
