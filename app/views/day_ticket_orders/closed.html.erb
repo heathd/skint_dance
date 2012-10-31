@@ -1,0 +1,23 @@
+<section>
+  <div class="page-header">
+    <h1>Day tickets at Skint 2012</h1>
+    <h3>2nd - 4th November 2012, Ashover, Derbyshire</h3>
+  </div>
+
+  <h2>Advance bookings are now closed</h2>
+  <p>You can still buy day tickets on the door</p>
+
+  <h3>Ticket prices</h3>
+  <ul>
+    <% TicketType.day.each do |ticket_type| %>
+      <li><%= ticket_type.description %> - <%= ticket_type.formatted_price %></li>
+    <% end %>
+  </ul>
+
+  <h3>Important notes</h3>
+  <p>Day tickets do not include any meals, food or accomodation.</p>
+  <p>The kitchen will be extremely busy and there <b>will not be space</b> in the hall/kitchen for you to prepare food, wash up etc. However, you're welcome to bring pre-prepared food/picnic and to eat in the hall with everyone else (there should be space to sit at the tables).</p>
+  <p>Alternatively there are <a href="http://goo.gl/maps/RKUyO">several lovely pubs</a> a few minutes walk away. </p>
+  <p>You can use the campsite/camping car area which costs £5 per unit per night. Payment for this is directly to the campsite owner. The campsite is adjacent to Ashover Village Hall (2 minutes walk).</p>
+
+</section>

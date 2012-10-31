@@ -4,6 +4,8 @@ SkintDance::Application.routes.draw do
 
   devise_for :admin_users, ActiveAdmin::Devise.config
 
+  match "/day_tickets/closed" => "day_ticket_orders#closed", as: :day_tickets_closed
+  
   resources :day_ticket_orders, path: "day_tickets" do
   end
 
