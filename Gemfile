@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.8'
 
-gem 'rvm-capistrano'
+# gem 'rvm-capistrano'
 gem 'rdiscount'
 gem 'bootstrap_form'
 gem 'less-rails-bootstrap'
