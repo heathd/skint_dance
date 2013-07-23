@@ -1,7 +1,7 @@
 <section>
   <div class="page-header">
-<h1>Reserve your place at Skint 2012</h1>
-<h3>2nd - 4th November 2012, Ashover, Derbyshire</h3>
+<h1>Reserve your place at Skint 2013</h1>
+<h3>15th - 18th November 2013, Ashover, Derbyshire</h3>
 </div>
 
 <%= bootstrap_form_for(@reservation, html: { class: 'form-horizontal' }) do |f|%>
@@ -10,13 +10,6 @@
   <%= f.text_field :phone_number %>
   <%= f.text_field :dietary_requirements, help: "if any" %>
   <%= f.select :ticket_type, TicketType.weekend.map { |type| [type.option_label, type.name] }, help: "Non-accomodation place also means you're on the waiting list for an accomodation ticket" %>
-
-  <%= f.check_box :participate_in_fare_pool, label: 'I would like to participate in the fare pool' %>
-  <div class="control-group">
-  <div class="controls">
-    <p>The aim of a fare pool is to even out the transport costs of participants. People who have lower travel costs contribute a little more, and those with higher travel costs a bit less, in order that overall participation costs become more equal. If you tick this box, we'll contact you with more information about how it will work.</p>
-  </div>
-  </div>
 
   <%= f.check_box :camping, label: 'Do you want to camp?' %>
   <div class="control-group">
