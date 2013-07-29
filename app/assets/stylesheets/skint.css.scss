@@ -50,12 +50,11 @@ html {
   padding: .5em 0;
   display: block;
   font-size: 700%;
+  font-weight: bold;
+  color: #333;
 }
-.masthead p {
-  font-size: 200%; 
-  display: block; 
-  padding: 10px 0; 
-  margin: 0;
+.masthead .logo a:hover {
+  color: #08C;
 }
 body.page {
   margin: 0; 
