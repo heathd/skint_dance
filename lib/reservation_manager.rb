@@ -1,21 +1,45 @@
 class ReservationManager
   def initialize(params = {})
-    @available_places = params[:available_places] || self.class.default_available_places
+    @clock = params[:clock] || DateTime
+    if params[:available_places]
+      @availability_schedule = {nil => params[:available_places]}
+    else
+      @availability_schedule = self.class.availability_schedule
+    end
   end
 
-  def self.default_available_places
+  def self.availability_schedule
     {
-      sleeping: 65,
-      non_sleeping: 35,
-      friday_evening: 80,
-      saturday_daytime: 30,
-      saturday_evening: 80,
-      sunday_daytime: 30
+      nil => {
+        friday_evening: 80,
+        saturday_daytime: 30,
+        saturday_evening: 80,
+        sunday_daytime: 30
+      },
+      '2013-08-07' => {
+        sleeping: 35,
+        non_sleeping: 15,
+        friday_evening: 80,
+        saturday_daytime: 30,
+        saturday_evening: 80,
+        sunday_daytime: 30        
+      },
+      '2013-08-28' => {
+        sleeping: 65,
+        non_sleeping: 35,
+        friday_evening: 80,
+        saturday_daytime: 30,
+        saturday_evening: 80,
+        sunday_daytime: 30        
+      }
     }
   end
 
-  def available_places(resource_category)
-    @available_places[resource_category.to_sym]
+  def available_places(resource_category, clock = @clock)
+    from_date, schedule_in_force = @availability_schedule.sort_by {|k,v| k || ""}.reverse.find do |from_date, schedule|
+      from_date.nil? || Date.parse(from_date) <= clock.now
+    end
+    schedule_in_force[resource_category.to_sym] || 0
   end
 
   def remaining_places(resource_category)
@@ -34,7 +58,7 @@ class ReservationManager
     Reservation.reserved.in_resource_category(resource_category).count
   end
 
-  def make_reservation(params, clock = DateTime)
+  def make_reservation(params, clock = @clock)
     ticket_type_name = params.delete(:ticket_type)
     ticket_type = TicketType.find_by_name(ticket_type_name) or raise "Couldn't find ticket type #{ticket_type_name}"
     reservation = Reservation.new(params.merge(state: "new", reference: random_reference, ticket_type: ticket_type))
@@ -53,14 +77,14 @@ class ReservationManager
     reservation
   end
 
-  def place_day_ticket_order(params, clock = DateTime)
+  def place_day_ticket_order(params, clock = @clock)
     ticket_types = TicketType.find_all((params[:ticket_types] || {}).keys)
     order = DayTicketOrder.new(params.merge(state: "new", reference: random_reference, ticket_types: ticket_types))
     order.save
     order
   end
 
-  def allocate_place_to(waiting_list_entry, clock = DateTime)
+  def allocate_place_to(waiting_list_entry, clock = @clock)
     Reservation.connection.transaction do
       if places_available_to_waiting_list(waiting_list_entry.resource_category) > 0
         waiting_list_entry.reservation.reserve(clock)
