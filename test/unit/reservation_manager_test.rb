@@ -107,6 +107,28 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal 0, reservation_manager.remaining_places(reservation.resource_category)
   end
 
+  test "waiting list is closed when there will be a future ticket issue for the resource category" do
+    reservation_manager = ReservationManager.new(
+      availability_schedule: {
+        "2013-01-01" => {sleeping: 0, non_sleeping: 0},
+        "2013-01-02" => {sleeping: 1}
+      })
+    refute reservation_manager.waiting_list_open?(:sleeping, fixed_clock("2013-01-01"))
+    assert reservation_manager.waiting_list_open?(:non_sleeping, fixed_clock("2013-01-01"))
+    assert reservation_manager.waiting_list_open?(:sleeping, fixed_clock("2013-01-02"))
+  end
+
+  test "can indicate next tickets available" do
+    reservation_manager = ReservationManager.new(
+      availability_schedule: {
+        "2013-01-01" => {sleeping: 0, non_sleeping: 0},
+        "2013-01-02" => {sleeping: 1}
+      })
+    assert_equal Date.parse("2013-01-02"), reservation_manager.next_ticket_release_date(:sleeping, fixed_clock("2013-01-01"))
+    assert_nil reservation_manager.next_ticket_release_date(:non_sleeping, fixed_clock("2013-01-01"))
+    assert_nil reservation_manager.next_ticket_release_date(:sleeping, fixed_clock("2013-01-02"))
+  end
+
   test "making a valid reservation when no places left adds the place to the waiting list" do
     reservation_manager = ReservationManager.new(available_places: {sleeping: 0, non_sleeping: 0})
     reservation = reservation_manager.make_reservation(reservation_params)

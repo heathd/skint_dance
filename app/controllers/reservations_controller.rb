@@ -8,7 +8,7 @@ class ReservationsController < ApplicationController
   def create
     reservation_params = params[:reservation]
     @reservation = RESERVATION_MANAGER.make_reservation(reservation_params)
-    if @reservation.valid?
+    if @reservation.errors.empty?
       redirect_to reservation_success_path(@reservation.reference)
     else
       render :index

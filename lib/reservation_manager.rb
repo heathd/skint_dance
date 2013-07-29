@@ -1,7 +1,9 @@
 class ReservationManager
   def initialize(params = {})
     @clock = params[:clock] || DateTime
-    if params[:available_places]
+    if params[:availability_schedule]
+      @availability_schedule = params[:availability_schedule]
+    elsif params[:available_places]
       @availability_schedule = {nil => params[:available_places]}
     else
       @availability_schedule = self.class.availability_schedule
@@ -58,20 +60,49 @@ class ReservationManager
     Reservation.reserved.in_resource_category(resource_category).count
   end
 
+  def waiting_list_open?(resource_category, clock = @clock)
+    future_schedules = @availability_schedule.select do |from_date, schedule|
+      from_date && Date.parse(from_date) > clock.now
+    end
+    ! future_schedules.any? {|from_date, schedule| schedule.has_key?(resource_category.to_sym)}
+  end
+
+  def next_ticket_release_date(resource_category, clock = @clock)
+    future_schedules = @availability_schedule.sort_by {|k,v| k||""}.select do |from_date, schedule|
+      from_date && Date.parse(from_date) > clock.now && schedule.has_key?(resource_category.to_sym)
+    end
+    if future_schedules.any? 
+      Date.parse(future_schedules[0][0])
+    else
+      nil
+    end
+  end
+
   def make_reservation(params, clock = @clock)
     ticket_type_name = params.delete(:ticket_type)
     ticket_type = TicketType.find_by_name(ticket_type_name) or raise "Couldn't find ticket type #{ticket_type_name}"
     reservation = Reservation.new(params.merge(state: "new", reference: random_reference, ticket_type: ticket_type))
     reservation.requested_at = clock.now
-    if reservation.save
+    if reservation.valid?
       if remaining_places(ticket_type.resource_category) > 0
+        reservation.save
         reservation.reserve
         reservation.set_payment_due!(clock)
-      else
+
+        # If they reserved a non-sleeping place when sleeping was full up, add them to the sleeping waiting list
+        if reservation.resource_category.to_sym == :non_sleeping && remaining_places(:sleeping) == 0 && waiting_list_open?(:sleeping)
+          reservation.add_to_waiting_list(:sleeping)
+        end
+      elsif waiting_list_open?(ticket_type.resource_category)
+        reservation.save
         reservation.add_to_waiting_list(reservation.resource_category)
-      end
-      if remaining_places(:sleeping) == 0 and reservation.resource_category.to_sym == :non_sleeping
-        reservation.add_to_waiting_list(:sleeping)
+
+        # On the waiting list for a non-sleeping place they are also added to the sleeping waiting list
+        if reservation.resource_category.to_sym == :non_sleeping && remaining_places(:sleeping) == 0 && waiting_list_open?(:sleeping)
+          reservation.add_to_waiting_list(:sleeping)
+        end
+      else
+        reservation.errors.add(:base, "No places left for that ticket type. You can buy tickets on #{next_ticket_release_date(reservation.resource_category)}.")
       end
     end
     reservation

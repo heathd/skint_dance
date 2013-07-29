@@ -22,12 +22,25 @@ class TicketType < ActiveRecord::Base
     "£#{pounds}.#{pence}"
   end
 
+  def remaining_places
+    RESERVATION_MANAGER.remaining_places(resource_category)
+  end
+
+  def waiting_list_open?
+    RESERVATION_MANAGER.waiting_list_open?(resource_category)
+  end
+
+  def next_ticket_release_date
+    RESERVATION_MANAGER.next_ticket_release_date(resource_category)
+  end
+
   def option_label
-    remaining_places = RESERVATION_MANAGER.remaining_places(resource_category)
     remaining_text = if remaining_places > 0
       "#{remaining_places} left"
-    else
+    elsif waiting_list_open?
       "waiting list"
+    elsif next_ticket_release_date
+      "on sale #{next_ticket_release_date}"
     end
     "#{description} - #{formatted_price} (#{remaining_text})"
   rescue
