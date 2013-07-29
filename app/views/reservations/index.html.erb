@@ -16,12 +16,33 @@
   <%= f.text_field :email %>
   <%= f.text_field :phone_number %>
   <%= f.text_field :dietary_requirements, help: "if any" %>
+  <%= f.text_field :travelling_from, help: "so we can coordinate lift sharing" %>
   <%= f.select :ticket_type, TicketType.weekend.map { |type| [type.option_label, type.name] }, help: "Non-accomodation place also means you're on the waiting list for an accomodation ticket" %>
 
   <%= f.check_box :camping, label: 'Do you want to camp?' %>
   <div class="control-group">
   <div class="controls">
     <p>It's £5 per unit per night. This is so that farmer can have a rough idea of numbers in advance. Let us know in the comments box if you'll have a tent or caravan.</p>
+  </div>
+  </div>
+
+  <div class="control-group">
+  <div class="controls">
+    <p><strong>Participating in Skint</strong></p>
+    <p>Skint depends on the cooperation everyone attending to help out with day-to-day tasks, rather than leaving it to a few (tired) people. Therefore please only sign up if you are willing to contribute your efforts to the festival community.</p>
+
+    <p>Over the course of the festival we will need your help with one or more of the following jobs:</p>
+    <ul>
+      <li>Booking people in at the welcome desk</li>
+      <li>Moving furniture between dancing sessions and meals</li>
+      <li>Scrubbing and chopping veg and fruit</li>
+      <li>Preparing plates etc. and serving up for meals</li>
+      <li>Washing up and tidying the kitchen</li>
+      <li>Sweeping and cleaning at the end on Sun and Mon</li>
+    </ul>
+
+    <p>Please let us know in the comments box below what you are willing to do. We will also need a couple of people to help coordinate volunteers, so if you can help with that let us know. 
+    </p>
   </div>
   </div>
 

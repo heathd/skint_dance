@@ -2,6 +2,7 @@ ActiveAdmin.register Reservation do
   index do
     column "Name", sortable: :name do |r| link_to r.name, edit_admin_reservation_path(r) end
     column :email
+    column :travelling_from
     column "Ref" do |r| r.reference end
     column :state
     column :ticket_type
@@ -15,6 +16,7 @@ ActiveAdmin.register Reservation do
       row :name
       row :email
       row :phone_number
+      row :travelling_from
       row :reference
       row :state
       row :payment_method
@@ -37,6 +39,7 @@ ActiveAdmin.register Reservation do
       f.input :name
       f.input :email
       f.input :phone_number
+      f.input :travelling_from
     end
 
     f.inputs "Administration" do
