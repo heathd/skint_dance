@@ -82,6 +82,6 @@ class Reservation < ActiveRecord::Base
   end
 
   def balance
-    ticket_type.price_in_pence - total_paid_in_pence
+    ticket_type && (ticket_type.price_in_pence - total_paid_in_pence)
   end
 end
