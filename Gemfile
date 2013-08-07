@@ -14,6 +14,8 @@ gem 'unicorn'
 gem 'gocardless'
 gem 'mysql2'
 gem 'exception_notification', require: 'exception_notifier'
+gem "recaptcha", :require => "recaptcha/rails"
+
 
 # Gems used only for assets and not required
 # in production environments by default.

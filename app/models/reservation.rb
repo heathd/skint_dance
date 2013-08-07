@@ -11,7 +11,7 @@ class Reservation < ActiveRecord::Base
   validates_presence_of :name, :email, :phone_number, :what_can_you_help_with
   validates_email_format_of :email
   validates :payment_method, inclusion: {in: PAYMENT_METHODS}
-  validates_presence_of :ticket_type_id
+  validates_presence_of :ticket_type
 
   state_machine :state, :initial => :new do
     state :new

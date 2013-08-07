@@ -58,6 +58,12 @@
   </div>
   <%= f.select :payment_method, payment_methods, html: {class: "span3"} %>
 
+  <div class="control-group">
+  <div class="controls">
+  <%= recaptcha_tags %>
+  </div>
+  </div>
+
   <%= f.actions do %>
     <%= f.primary 'Make reservation', disable_with: 'Reserving...' %>
   <% end %>

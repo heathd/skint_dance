@@ -81,10 +81,13 @@ class ReservationManager
   def make_reservation(params, clock = @clock)
     ticket_type_name = params.delete(:ticket_type)
     ticket_type = TicketType.find_by_name(ticket_type_name) or raise "Couldn't find ticket type #{ticket_type_name}"
+    captcha_valid = params.delete(:captcha_valid)
     reservation = Reservation.new(params.merge(state: "new", reference: random_reference, ticket_type: ticket_type))
     reservation.requested_at = clock.now
     if reservation.valid?
-      if remaining_places(ticket_type.resource_category) > 0
+      if !captcha_valid
+        reservation.errors.add(:base, "Word verification response is incorrect, please try again.")
+      elsif remaining_places(ticket_type.resource_category) > 0
         reservation.save
         reservation.reserve
         reservation.set_payment_due!(clock)
