@@ -40,7 +40,7 @@ class TicketType < ActiveRecord::Base
     elsif waiting_list_open?
       "waiting list"
     elsif next_ticket_release_date
-      "on sale #{next_ticket_release_date}"
+      "on sale #{I18n.l(next_ticket_release_date)}"
     end
     "#{description} - #{formatted_price} (#{remaining_text})"
   rescue

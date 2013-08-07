@@ -19,21 +19,19 @@
   <%= f.text_field :travelling_from, help: "so we can coordinate lift sharing" %>
   <%= f.select :ticket_type, TicketType.weekend.map { |type| [type.option_label, type.name] }, help: "Non-accomodation place also means you're on the waiting list for an accomodation ticket" %>
 
-  <%= f.check_box :camping, label: 'Do you want to camp?' %>
-  <div class="control-group">
-  <div class="controls">
-    <p>It's £5 per unit per night. This is so that farmer can have a rough idea of numbers in advance. Let us know in the comments box if you'll have a tent or caravan.</p>
-  </div>
-  </div>
+  <%= f.check_box :camping, label: "Do you want to camp? (£5 per unit per night, pay during the weekend)." %>
 
   <div class="control-group">
   <div class="controls">
     <p><strong>Participating in Skint</strong></p>
-    <p>Skint depends on the cooperation everyone attending to help out with day-to-day tasks, rather than leaving it to a few (tired) people. Therefore please only sign up if you are willing to contribute your efforts to the festival community.</p>
+    <p>Skint depends on the cooperation everyone attending to help out with day-to-day tasks.</p>
 
-    <p>Over the course of the festival we will need your help with one or more of the following jobs:</p>
+    <p>We think that if everyone volunteers about <b>two hours</b> during the course of the weekend, then nobody will end up getting stuck doing the washing up all day!</p>
+
+    <p>Here are some of the jobs we'll need your help with:</p>
     <ul>
-      <li>Booking people in at the welcome desk</li>
+      <li>Booking people in at the welcome desk on Friday evening</li>
+      <li>Collecting people from nearby train stations on Friday evening<br />&mdash; let us know your what time on Friday you could do this</li>
       <li>Moving furniture between dancing sessions and meals</li>
       <li>Scrubbing and chopping veg and fruit</li>
       <li>Preparing plates etc. and serving up for meals</li>
@@ -41,16 +39,13 @@
       <li>Sweeping and cleaning at the end on Sun and Mon</li>
     </ul>
 
-    <p>Please let us know in the comments box below what you are willing to do. We will also need a couple of people to help coordinate volunteers, so if you can help with that let us know. 
-    </p>
+    <p>Skint is also about sharing music and dance. Can you teach a dance or music workshop? Or play for dancing? Let us know below.</p> 
   </div>
   </div>
 
   <%= f.text_area :what_can_you_help_with, rows: 10, help: "see #{link_to 'how skint works', '/info'}".html_safe %>
 
   <%= f.text_area :comments, rows: 10 %>
-
-  <%= f.select :payment_method, payment_methods, html: {class: "span3"} %>
 
   <div class="control-group">
   <div class="controls">
@@ -61,6 +56,8 @@
   <p class="help-block"><b>Cheque</b> - as a last resort, you can post us a cheque. Details will be shown on the next page.</p>
   </div>
   </div>
+  <%= f.select :payment_method, payment_methods, html: {class: "span3"} %>
+
   <%= f.actions do %>
     <%= f.primary 'Make reservation', disable_with: 'Reserving...' %>
   <% end %>
