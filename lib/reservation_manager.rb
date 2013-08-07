@@ -18,7 +18,7 @@ class ReservationManager
         saturday_evening: 80,
         sunday_daytime: 30
       },
-      '2013-08-14 12:00' => {
+      '2013-08-19 12:00' => {
         sleeping: 35,
         non_sleeping: 15,
         friday_evening: 80,
