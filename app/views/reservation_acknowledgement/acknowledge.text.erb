@@ -1,0 +1,21 @@
+Hi <%= @reservation.name %>,
+
+Thanks for signing up for Skint. You requested the following:
+  
+  <% [@reservation.ticket_type].each do |type| %>
+  <%= type.description %> - <%= type.formatted_price %>
+  <% end %>
+
+If you want tickets for more than one person, you'll need to place a separate
+order for each person.
+
+To confirm your order, please pay online using this link:
+
+  <%= reservation_url(@reservation) %>
+
+If you have any problems or questions, don't hesitate to drop us an email on
+skint.dance@gmail.com.
+
+Best wishes
+
+The Skint Team

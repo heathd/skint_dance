@@ -13,6 +13,7 @@ class ReservationManager
   def self.availability_schedule
     {
       nil => {
+        sleeping: 35,
         friday_evening: 80,
         saturday_daytime: 30,
         saturday_evening: 80,

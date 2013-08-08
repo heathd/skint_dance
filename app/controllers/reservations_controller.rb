@@ -9,6 +9,7 @@ class ReservationsController < ApplicationController
     reservation_params = params[:reservation].merge(captcha_valid: verify_recaptcha)
     @reservation = RESERVATION_MANAGER.make_reservation(reservation_params)
     if @reservation.errors.empty?
+      ReservationAcknowledgement.acknowledge(@reservation).deliver
       redirect_to reservation_success_path(@reservation.reference)
     else
       render :index
