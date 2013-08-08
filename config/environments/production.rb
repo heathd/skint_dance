@@ -59,7 +59,8 @@ SkintDance::Application.configure do
     user_name: "skint.dance@gmail.com",
     password: ENV['SKINT_GMAIL_PASSWORD'],
     authentication: "plain",
-    enable_starttls_auto: true
+    enable_starttls_auto: true,
+     openssl_verify_mode: OpenSSL::SSL::VERIFY_NONE
   }
 
   config.middleware.use ExceptionNotifier,
