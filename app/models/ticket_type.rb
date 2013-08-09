@@ -3,7 +3,7 @@ class TicketType < ActiveRecord::Base
   validates :resource_category, :format => { :with => /\A[a-zA-Z_]+\z/ }
 
   def self.weekend
-    where(resource_category: %w{sleeping non_sleeping})
+    where(resource_category: %w{sleeping non_sleeping}).order("price_in_pence desc")
   end
 
   def self.day
