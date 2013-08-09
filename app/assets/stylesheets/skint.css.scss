@@ -3,16 +3,16 @@ h1__ {
   font-size: 240%;
 }
 body.card {
-  margin: 50px auto; 
-  width: 600px; 
+  margin: 50px auto;
+  width: 600px;
 }
 body.card div#content {
-  text-align: center; 
-  background-color: #E2EE00; 
+  text-align: center;
+  background-color: #E2EE00;
   padding: 20px 50px;
 }
 body.card div#content h2 {
-  font-size: 135%; 
+  font-size: 135%;
   margin: 0 0 1em;
 }
 body.card div#content p {
@@ -21,9 +21,9 @@ body.card div#content p {
 
 .masthead, .footer {
   padding: 0 10px;
-  background-color: #E2EE00; 
-  margin: 0 auto; 
-  width: 800px; 
+  background-color: #E2EE00;
+  margin: 0 auto;
+  width: 800px;
 }
 .footer {
   padding: 1em 10px;
@@ -36,20 +36,20 @@ h2.alert, h2.alert a{
   text-decoration: none;
 }
 html {
-  background: image-url("2012/john-rowan-fiddlers.jpg") no-repeat center center fixed; 
+  background: image-url("2012/john-rowan-fiddlers.jpg") no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
 }
 #homepage h1, .masthead .logo a {
-  width: 450px;
+  width: 500px;
   height: 78px;
   text-align: center;
   margin: 0 auto;
   padding: .5em 0;
   display: block;
-  font-size: 700%;
+  font-size: 650%;
   font-weight: bold;
   color: #333;
 }
@@ -57,16 +57,16 @@ html {
   color: #08C;
 }
 body.page {
-  margin: 0; 
-  padding: 0; 
+  margin: 0;
+  padding: 0;
   background-color: #eee;
 }
 body.page div#content {
-  margin: 0 auto;  
-  padding: 20px 40px; 
-  background-color: #fff; 
-  text-align: left; 
-  width: 740px; 
+  margin: 0 auto;
+  padding: 20px 40px;
+  background-color: #fff;
+  text-align: left;
+  width: 740px;
 }
 .todo {
   background-color: #ffff00;
@@ -77,7 +77,7 @@ a.big {
 
 /* MailChimp Form Embed Code - Slim - 08/17/2011 */
 #mc_embed_signup{
-  background:transparent; clear:left; font:14px Helvetica,Arial,sans-serif; 
+  background:transparent; clear:left; font:14px Helvetica,Arial,sans-serif;
 }
 #mc_embed_signup form {display:block; position:relative; padding:10px 0 10px 3%}
 #mc_embed_signup h2 {font-weight:bold; padding:0; margin:15px 0; font-size:1.4em;}
@@ -88,7 +88,7 @@ a.big {
 #mc_embed_signup .button {background-color: #aaa; border: 0 none; border-radius:4px; color: #FFFFFF; cursor: pointer; display: inline-block; font-size:15px; font-weight: bold; height: 32px; line-height: 32px; margin: 0 5px 10px 0; padding:0; text-align: center; text-decoration: none; vertical-align: top; white-space: nowrap; width: auto;}
 #mc_embed_signup .button:hover {background-color:#777;}
 #mc_embed_signup .small-meta {font-size: 11px;}
-#mc_embed_signup .nowrap {white-space:nowrap;}     
+#mc_embed_signup .nowrap {white-space:nowrap;}
 #mc_embed_signup .clear {clear:none; display:inline;}
 
 #mc_embed_signup label {font-size:16px; padding-bottom:10px; font-weight:bold;}
