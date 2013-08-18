@@ -8,10 +8,16 @@ Thanks for signing up for Skint. You requested the following:
 
 If you want tickets for more than one person, you'll need to place a separate
 order for each person.
+<% if @reservation.payment_due.present? %>
+You have until <%= l @reservation.payment_due %> to pay for your reservation
+before we release your place to someone else.
+<% else %>
+We'd be grateful if you could make your payment as soon as you can, thanks!
+<% end %>
 
 To confirm your order, please pay online using this link:
 
-  <%= reservation_url(@reservation) %>
+  <%= reservation_success_url(@reservation.reference) %>
 
 If you have any problems or questions, don't hesitate to drop us an email on
 skint.dance@gmail.com.
