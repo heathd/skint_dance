@@ -5,6 +5,7 @@ class GocardlessFetcher
 
   def fetch
     @merchant.bills.each do |remote_bill|
+      next if remote_bill.created_at < 6.months.ago
       local_bill = GocardlessBill.find_or_create_by_gocardless_id(remote_bill.id)
       %w{amount created_at description name status merchant_id user_id source_type source_id}.each do |attribute|
         local_bill.send("#{attribute}=", remote_bill.send(attribute))
