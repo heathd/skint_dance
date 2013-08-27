@@ -9,12 +9,13 @@ class ReservationManagerTest < ActiveSupport::TestCase
       phone_number: "123",
       what_can_you_help_with: "chopping veg",
       payment_method: "paypal",
-      ticket_type: "Fri-Sun, standard"
+      ticket_type: "Fri-Sun, standard",
+      captcha_valid: true
     }.merge(overrides)
   end
 
   def fixed_clock(fixed_at)
-    OpenStruct.new(now: DateTime.parse(fixed_at))
+    OpenStruct.new(now: Time.zone.parse(fixed_at))
   end
 
   def setup
@@ -22,19 +23,19 @@ class ReservationManagerTest < ActiveSupport::TestCase
   end
 
   test "default reservation manager has 0 sleeping places and 0 non-sleeping places before 7th august" do
-    @reservation_manager = ReservationManager.new(clock: fixed_clock('2013-08-06'))
+    @reservation_manager = ReservationManager.new(clock: fixed_clock('2013-08-06 12:00 +01:00'))
     assert_equal 0, @reservation_manager.available_places(:sleeping)
     assert_equal 0, @reservation_manager.available_places(:non_sleeping)
   end
 
   test "default reservation manager has 35 sleeping places and 15 non-sleeping places from 7th august" do
-    @reservation_manager = ReservationManager.new(clock: fixed_clock('2013-08-07'))
+    @reservation_manager = ReservationManager.new(clock: fixed_clock('2013-08-19 12:00 +01:00'))
     assert_equal 35, @reservation_manager.available_places(:sleeping)
     assert_equal 15, @reservation_manager.available_places(:non_sleeping)
   end
 
   test "default reservation manager has 65 sleeping places and 35 non-sleeping places from 28th august" do
-    @reservation_manager = ReservationManager.new(clock: fixed_clock('2013-08-28'))
+    @reservation_manager = ReservationManager.new(clock: fixed_clock('2013-08-28 12:00 +01:00'))
     assert_equal 65, @reservation_manager.available_places(:sleeping)
     assert_equal 35, @reservation_manager.available_places(:non_sleeping)
   end
@@ -63,15 +64,15 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_match /^[a-zA-Z0-9=_-]{4,10}$/, ReservationManager.new.random_reference
   end
 
-  test "make_reservation creates a reserved reservation with a reference number " do
-    reservation = ReservationManager.new(clock: fixed_clock("2013-08-07")).make_reservation(reservation_params)
+  test "make_reservation creates a reserved reservation with a reference number" do
+    reservation = ReservationManager.new(clock: fixed_clock("2013-08-19 12:00 +01:00")).make_reservation(reservation_params)
     assert reservation.valid?
     assert_equal 'reserved', reservation.state
     refute reservation.reference.blank?
   end
 
   test "make_reservation uses the provided clock to set requested_at" do
-    clock = OpenStruct.new(now: DateTime.parse("2011-01-01 00:00"))
+    clock = OpenStruct.new(now: Time.zone.parse("2011-01-01 00:00"))
     reservation = ReservationManager.new.make_reservation(reservation_params, clock)
     assert_equal clock.now, reservation.requested_at
   end
@@ -124,7 +125,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
         "2013-01-01" => {sleeping: 0, non_sleeping: 0},
         "2013-01-02" => {sleeping: 1}
       })
-    assert_equal Date.parse("2013-01-02"), reservation_manager.next_ticket_release_date(:sleeping, fixed_clock("2013-01-01"))
+    assert_equal Time.zone.parse("2013-01-02"), reservation_manager.next_ticket_release_date(:sleeping, fixed_clock("2013-01-01"))
     assert_nil reservation_manager.next_ticket_release_date(:non_sleeping, fixed_clock("2013-01-01"))
     assert_nil reservation_manager.next_ticket_release_date(:sleeping, fixed_clock("2013-01-02"))
   end
@@ -218,6 +219,6 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal 0, WaitingListEntry.count
     waiting.reload
     assert_equal "reserved", waiting.state
-    assert_equal DateTime.parse('2011-01-04') + 1.week, waiting.payment_due
+    assert_equal Time.zone.parse('2011-01-04') + 1.week, waiting.payment_due
   end
 end

@@ -1,6 +1,6 @@
 class ReservationManager
   def initialize(params = {})
-    @clock = params[:clock] || DateTime
+    @clock = params[:clock] || Time.zone
     if params[:availability_schedule]
       @availability_schedule = params[:availability_schedule]
     elsif params[:available_places]
@@ -18,7 +18,7 @@ class ReservationManager
         saturday_evening: 80,
         sunday_daytime: 30
       },
-      '2013-08-19 12:00' => {
+      '2013-08-19 12:00 +01:00' => {
         sleeping: 35,
         non_sleeping: 15,
         friday_evening: 80,
@@ -26,7 +26,7 @@ class ReservationManager
         saturday_evening: 80,
         sunday_daytime: 30        
       },
-      '2013-08-28 12:00' => {
+      '2013-08-28 12:00 +01:00' => {
         sleeping: 65,
         non_sleeping: 35,
         friday_evening: 80,
@@ -39,7 +39,7 @@ class ReservationManager
 
   def available_places(resource_category, clock = @clock)
     from_date, schedule_in_force = @availability_schedule.sort_by {|k,v| k || ""}.reverse.find do |from_date, schedule|
-      from_date.nil? || DateTime.parse(from_date) <= clock.now
+      from_date.nil? || Time.zone.parse(from_date) <= clock.now
     end
     schedule_in_force[resource_category.to_sym] || 0
   end
@@ -62,17 +62,17 @@ class ReservationManager
 
   def waiting_list_open?(resource_category, clock = @clock)
     future_schedules = @availability_schedule.select do |from_date, schedule|
-      from_date && DateTime.parse(from_date) > clock.now
+      from_date && Time.zone.parse(from_date) > clock.now
     end
     ! future_schedules.any? {|from_date, schedule| schedule.has_key?(resource_category.to_sym)}
   end
 
   def next_ticket_release_date(resource_category, clock = @clock)
     future_schedules = @availability_schedule.sort_by {|k,v| k||""}.select do |from_date, schedule|
-      from_date && DateTime.parse(from_date) > clock.now && schedule.has_key?(resource_category.to_sym)
+      from_date && Time.zone.parse(from_date) > clock.now && schedule.has_key?(resource_category.to_sym)
     end
     if future_schedules.any? 
-      DateTime.parse(future_schedules[0][0])
+      Time.zone.parse(future_schedules[0][0])
     else
       nil
     end
