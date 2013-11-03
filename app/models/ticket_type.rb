@@ -7,7 +7,7 @@ class TicketType < ActiveRecord::Base
   end
 
   def self.day
-    where(resource_category: %w{friday_evening saturday_daytime saturday_evening sunday_daytime})
+    where(resource_category: %w{friday_evening saturday_daytime saturday_evening sunday_daytime sunday_evening monday_daytime})
   end
 
   def self.find_all(types)

@@ -20,11 +20,15 @@ class DayTicketOrder < ActiveRecord::Base
 
   def gocardless_url
     payment_links = {
-      1 => "https://gocardless.com/pay/S18MCG4R",
-      2 => "https://gocardless.com/pay/04555Q7F",
-      3 => "https://gocardless.com/pay/9JE2FT0A",
-      4 => "https://gocardless.com/pay/7Q2APT29"
+      1 => "https://gocardless.com/pay/JSSMR63B",
+      2 => "https://gocardless.com/pay/BYT81FZ8",
+      3 => "https://gocardless.com/pay/STQA306E",
+      4 => "https://gocardless.com/pay/EAVJFYSQ",
+      5 => "https://gocardless.com/pay/N6W16AKA",
+      6 => "https://gocardless.com/pay/020FZJE1"
     }
     payment_links[ticket_types.count]
   end
 end
+
+

@@ -1,0 +1,6 @@
+TicketType.create!(name: "FriEve", description: "Friday evening", price_in_pence: 500, resource_category: "friday_evening")
+TicketType.create!(name: "SatDay", description: "Saturday day", price_in_pence: 500, resource_category: "saturday_daytime")
+TicketType.create!(name: "SatEve", description: "Saturday evening", price_in_pence: 500, resource_category: "saturday_evening")
+TicketType.create!(name: "SunDay", description: "Sunday day", price_in_pence: 500, resource_category: "sunday_daytime")
+TicketType.create!(name: "SunEve", description: "Sunday evening", price_in_pence: 500, resource_category: "sunday_evening")
+TicketType.create!(name: "MonDay", description: "Monday day", price_in_pence: 500, resource_category: "monday_daytime")

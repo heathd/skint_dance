@@ -11,17 +11,9 @@
 
 <p>A weekend of folk music and dance in Derbyshire for the skint, with music and dance from across Europe. Workshops, sessions, bals, lovely food, friendly atmosphere and beautiful countryside nearby!</p>
 
-<% if RESERVATION_MANAGER.remaining_places("sleeping") > 0 || RESERVATION_MANAGER.remaining_places("non_sleeping") > 0 %>
-  <h2>Bookings</h2>
-  <a href="/reservations" class="btn btn-large btn-primary">Bookings open</a>
-<% elsif RESERVATION_MANAGER.waiting_list_open?("sleeping") %>
-  <h2>Bookings</h2>
-  <a href="/reservations" class="btn btn-large btn-primary">Waiting list</a>
-<% elsif RESERVATION_MANAGER.next_ticket_release_date("sleeping") %>
-  <h2>Bookings open
-    <%= l RESERVATION_MANAGER.next_ticket_release_date("sleeping") %>
-  </h2>
-<% end %>
+<h3>Day tickets</h3>
+<p>Skint is now fully booked, but you can still get day tickets,<br />in advance or on the door.</p>
+<p><a href="/day_tickets" class="btn btn-large btn-primary">Book day tickets</a></p>
 
 <p><a href="info.html">Find out more about Skint</a></p>
 
