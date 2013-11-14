@@ -2,10 +2,12 @@ class DayTicketOrdersController < ApplicationController
   before_filter :find_day_ticket_order, only: :show
 
   def index
+    redirect_to action: :closed
     @day_ticket_order = DayTicketOrder.new(ticket_types: TicketType.day)
   end
 
   def create
+    redirect_to action: :closed
     @day_ticket_order = RESERVATION_MANAGER.place_day_ticket_order(params[:day_ticket_order])
     if @day_ticket_order.valid?
       DayTicketOrderAcknowledgement.acknowledge(@day_ticket_order).deliver
