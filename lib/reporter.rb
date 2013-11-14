@@ -36,7 +36,7 @@ class Reporter
     headings = ["name", "phone_number", "tickets", "state", "comments"]
 
     reservations = DayTicketOrder.where(state: "cancelled").order(:state, :name).all.map do |r|
-      [r.name, r.phone_number, r.ticket_types.map(&:name).join(", "), r.state, r.balance, r.comments]
+      [r.name, r.phone_number, r.email, r.ticket_types.map(&:name).join(", "), r.state, r.balance, r.comments]
     end
 
     [headings] + reservations
