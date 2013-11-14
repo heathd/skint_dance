@@ -2,7 +2,7 @@ require 'csv'
 
 class Reporter
   def report
-    %w{reservations day_ticket_orders}.each do |type|
+    %w{reservations day_ticket_orders refunds_due}.each do |type|
       data = self.send(type.to_sym)
       filename = "#{type}.csv"
       writer = CSV.open(filename, 'w')
@@ -32,4 +32,13 @@ class Reporter
     [headings] + reservations
   end
 
+  def refunds_due
+    headings = ["name", "phone_number", "tickets", "state", "comments"]
+
+    reservations = DayTicketOrder.where(state: "cancelled").order(:state, :name).all.map do |r|
+      [r.name, r.phone_number, r.ticket_types.map(&:name).join(", "), r.state, r.balance, r.comments]
+    end
+
+    [headings] + reservations
+  end
 end
