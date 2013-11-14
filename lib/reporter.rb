@@ -35,8 +35,8 @@ class Reporter
   def refunds_due
     headings = ["name", "phone_number", "tickets", "state", "comments"]
 
-    reservations = DayTicketOrder.where(state: "cancelled").order(:state, :name).all.map do |r|
-      [r.name, r.phone_number, r.email, r.ticket_types.map(&:name).join(", "), r.state, r.balance, r.comments]
+    reservations = Reservation.where(state: "cancelled").order(:state, :name).all.map do |r|
+      [r.name, r.phone_number, r.email, r.ticket_type.name, r.state, r.balance, r.comments]
     end
 
     [headings] + reservations
