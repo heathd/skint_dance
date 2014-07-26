@@ -54,6 +54,13 @@ GEM
       net-sftp (>= 2.0.0)
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
+    coffee-rails (3.2.2)
+      coffee-script (>= 2.2.0)
+      railties (~> 3.2.0)
+    coffee-script (2.2.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.6.3)
     commonjs (0.2.6)
     devise (3.2.4)
       bcrypt (~> 3.0)
@@ -194,6 +201,7 @@ DEPENDENCIES
   activeadmin
   bootstrap_form
   capistrano
+  coffee-rails
   exception_notification
   gocardless
   jquery-rails (< 3.0.0)
