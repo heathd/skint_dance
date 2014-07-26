@@ -1,4 +1,17 @@
 ActiveAdmin.setup do |config|
+  # == Root
+  # Set the action to call for the root path. You can set different
+  # roots for each namespace.
+  # Default:
+  config.root_to = 'dashboard#index'
+   
+  # == Batch Actions
+  # Enable and disable Batch Actions
+  config.batch_actions = true
+   
+  # == CSV options
+  # Set the CSV builder separator (default is ",")
+  # config.csv_column_separator = ','
 
   # == Site Title
   #
