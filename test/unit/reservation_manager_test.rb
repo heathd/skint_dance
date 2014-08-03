@@ -30,24 +30,29 @@ class ReservationManagerTest < ActiveSupport::TestCase
     OpenStruct.new(now: Time.zone.parse(fixed_at))
   end
 
+  def reservation_manager_when_sales_are_live
+    @fixed_clock = fixed_clock('2014-08-06 19:00 +01:00')
+    ReservationManager.new(clock: @fixed_clock)
+  end
+
   def setup
     seed_ticket_types
   end
 
   test "default_reservation_manager_has_0_sleeping_places_and_0_non_sleeping_places_before_6th_august_7pm" do
-    @reservation_manager = ReservationManager.new(clock: fixed_clock('2013-08-06 18:59:59 +01:00'))
+    @reservation_manager = ReservationManager.new(clock: fixed_clock('2014-08-06 18:59:59 +01:00'))
     assert_equal 0, @reservation_manager.available_places(:sleeping)
     assert_equal 0, @reservation_manager.available_places(:non_sleeping)
   end
 
   test "default reservation manager has 85 sleeping places and 15 non-sleeping places from 6th august 7pm" do
-    @reservation_manager = ReservationManager.new(clock: fixed_clock('2013-08-19 19:00 +01:00'))
-    assert_equal 35, @reservation_manager.available_places(:sleeping)
+    @reservation_manager = ReservationManager.new(clock: fixed_clock('2014-08-06 19:00 +01:00'))
+    assert_equal 85, @reservation_manager.available_places(:sleeping)
     assert_equal 15, @reservation_manager.available_places(:non_sleeping)
   end
 
   test "default reservation manager has day tickets" do
-    @reservation_manager = ReservationManager.new
+    @reservation_manager = reservation_manager_when_sales_are_live
     assert_equal 80, @reservation_manager.available_places(:friday_evening)
     assert_equal 30, @reservation_manager.available_places(:saturday_daytime)
     assert_equal 80, @reservation_manager.available_places(:saturday_evening)
@@ -71,8 +76,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
   end
 
   test "pre_reserve creates a pre-reservation for one person" do
-    clock = fixed_clock("2013-08-19 12:00 +01:00")
-    pre_reservations = ReservationManager.new(clock: clock).pre_reserve(
+    pre_reservations = reservation_manager_when_sales_are_live.pre_reserve(
       name: "Jane",
       email: "jane@example.com",
       resource_category: "sleeping",
@@ -86,12 +90,11 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal "jane@example.com", pre_reservation.email
     assert_equal "sleeping", pre_reservation.resource_category
     refute_equal "", pre_reservation.reference.to_s
-    assert_equal clock.now + 1.hour, pre_reservation.expires_at
+    assert_equal @fixed_clock.now + 1.hour, pre_reservation.expires_at
   end
 
   test "pre_reserve creates a pre-reservation for two people" do
-    clock = fixed_clock("2013-08-19 12:00 +01:00")
-    pre_reservations = ReservationManager.new(clock: clock).pre_reserve(
+    pre_reservations = reservation_manager_when_sales_are_live.pre_reserve(
       name: "Jane",
       email: "jane@example.com",
       resource_category: "sleeping",
@@ -99,26 +102,26 @@ class ReservationManagerTest < ActiveSupport::TestCase
     )
 
     assert_equal 2, pre_reservations.size
-    assert pre_reservations.all? do |pre_reservation|
+    pre_reservations.each do |pre_reservation|
       assert pre_reservation.valid?
 
       assert_equal "Jane", pre_reservation.name
       assert_equal "jane@example.com", pre_reservation.email
       assert_equal "sleeping", pre_reservation.resource_category
       refute_equal "", pre_reservation.reference.to_s
-      assert_equal clock.now + 1.hour, pre_reservation.expires_at
+      assert_equal @fixed_clock.now + 1.hour, pre_reservation.expires_at
     end
   end
 
   test "make_reservation creates a reserved reservation with a reference number from the pre-reservation" do
-    reservation = ReservationManager.new(clock: fixed_clock("2013-08-19 12:00 +01:00")).make_reservation(pre_reservation, reservation_params)
+    reservation = reservation_manager_when_sales_are_live.make_reservation(pre_reservation, reservation_params)
     assert reservation.valid?
     assert_equal 'reserved', reservation.state
     refute reservation.reference.blank?
   end
 
   test "make_reservation gives an error if you try to reserve a sleeping place with a non-sleeping pre reservation" do
-    reservation = ReservationManager.new(clock: fixed_clock("2013-08-19 12:00 +01:00"))
+    reservation = reservation_manager_when_sales_are_live
       .make_reservation(
         pre_reservation(1, resource_category: "non_sleeping"), 
         reservation_params(ticket_type: "Fri-Sun, standard")
@@ -135,13 +138,13 @@ class ReservationManagerTest < ActiveSupport::TestCase
   end
 
   test "make_reservation uses the provided clock to set payment_due date" do
-    clock = fixed_clock("2013-08-27")
+    clock = fixed_clock("2014-08-27")
     reservation = ReservationManager.new(clock: clock).make_reservation(pre_reservation, reservation_params)
     assert_equal clock.now + 1.week, reservation.payment_due
   end
 
   test "making a valid reservation decrements the available places for that resource category, but not other categories" do
-    reservation_manager = ReservationManager.new(clock: fixed_clock("2013-08-27"))
+    reservation_manager = reservation_manager_when_sales_are_live
     assert_difference "reservation_manager.remaining_places(:non_sleeping)", 0 do
       assert_difference "reservation_manager.remaining_places(:sleeping)", -1 do
         reservation_manager.make_reservation(pre_reservation, reservation_params(ticket_type: "Fri-Sun, standard"))
@@ -150,7 +153,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
   end
 
   test "making an invalid reservation does not decrement the available places for that resource category" do
-    reservation_manager = ReservationManager.new
+    reservation_manager = reservation_manager_when_sales_are_live
     ticket_type = TicketType.find_by_name("Fri-Sun, standard")
     assert_difference "reservation_manager.remaining_places(:sleeping)", 0 do
       reservation_manager.make_reservation(pre_reservation, reservation_params(ticket_type: "Fri-Sun, standard", email: "invalid@email@address"))
@@ -196,7 +199,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
   end
 
   test "cancelling a reserved place does not release a place to general signups" do
-    reservation_manager = ReservationManager.new
+    reservation_manager = reservation_manager_when_sales_are_live
     reservation = reservation_manager.make_reservation(pre_reservation, reservation_params)
     assert_no_difference "reservation_manager.remaining_places(reservation.resource_category)" do
       reservation.cancel
@@ -204,7 +207,7 @@ class ReservationManagerTest < ActiveSupport::TestCase
   end
 
   test "cancelling a reserved place does release the place to the waiting list" do
-    reservation_manager = ReservationManager.new(clock: fixed_clock("2013-08-27"))
+    reservation_manager = reservation_manager_when_sales_are_live
     reservation = reservation_manager.make_reservation(pre_reservation, reservation_params)
     assert_difference "reservation_manager.places_available_to_waiting_list(reservation.resource_category)", 1 do
       reservation.cancel

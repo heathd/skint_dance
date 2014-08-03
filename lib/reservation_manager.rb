@@ -14,23 +14,10 @@ class ReservationManager
 
   def self.availability_schedule
     {
-      nil => {
-        friday_evening: 80,
-        saturday_daytime: 30,
-        saturday_evening: 80,
-        sunday_daytime: 30
-      },
-      '2013-08-19 12:00 +01:00' => {
-        sleeping: 35,
+      nil => {},
+      '2014-08-06 19:00 +01:00' => {
+        sleeping: 85,
         non_sleeping: 15,
-        friday_evening: 80,
-        saturday_daytime: 30,
-        saturday_evening: 80,
-        sunday_daytime: 30        
-      },
-      '2013-08-28 12:00 +01:00' => {
-        sleeping: 70,
-        non_sleeping: 30,
         friday_evening: 80,
         saturday_daytime: 30,
         saturday_evening: 80,
