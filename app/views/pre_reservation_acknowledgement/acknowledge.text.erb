@@ -1,0 +1,22 @@
+Hi <%= @pre_reservation.name %>,
+
+Thanks for signing up for Skint. You have successfully pre-reserved for a <%= @pre_reservation.resource_category %> place.
+
+If you asked to reserve two places then you will have received two separate email messages -- one for each person.
+
+You now have one hour to fill out the reservation form. If you haven't already done that, you can do so by clicking this link:
+
+  <%= reservations_url(pre_reservation: @pre_reservation.reference) %>
+
+Your pre-reservation reference for this place is:
+
+  <%= @pre_reservation.reference %>
+
+Please mention it if you contact us.
+
+If you have any problems or questions, don't hesitate to drop us an email on
+skint.dance@gmail.com.
+
+Best wishes
+
+The Skint Team

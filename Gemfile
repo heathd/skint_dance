@@ -29,5 +29,8 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+group :development do
+  # gem 'minitest'
+end
 gem 'jquery-rails', "< 3.0.0"
 

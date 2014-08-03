@@ -4,6 +4,11 @@
 <h3>31st October - 3rd November 2014, Ashover, Derbyshire</h3>
 </div>
 
+<div class="alert alert-block alert-info">
+<h4>Note</h4>
+<p>You have until <b><%= l @pre_reservation.expires_at %></b> to complete your reservation.</p>
+</div>
+
 <%= bootstrap_form_for(@reservation, html: { class: 'form-horizontal' }) do |f|%>
   <% if f.object.errors.any? %>
   <div class="controls alert alert-block">
@@ -12,12 +17,13 @@
   </div>
 
   <% end %>
+  <%= hidden_field_tag :pre_reservation, @pre_reservation.reference %>
   <%= f.text_field :name, label: "Your name", autofocus: true %>
   <%= f.text_field :email %>
   <%= f.text_field :phone_number %>
   <%= f.text_field :dietary_requirements, help: "if any" %>
   <%= f.text_field :travelling_from, help: "so we can coordinate lift sharing" %>
-  <%= f.select :ticket_type, TicketType.weekend.map { |type| [type.option_label, type.name] }, help: "Non-accomodation place also means you're on the waiting list for an accomodation ticket" %>
+  <%= f.select :ticket_type, ticket_type_options.map { |type| [type.option_label, type.name] }, help: "Non-accomodation place also means you're on the waiting list for an accomodation ticket" %>
 
   <%= f.check_box :camping, label: "Do you want to camp? (£5 per unit per night, pay during the weekend)." %>
 
@@ -57,13 +63,6 @@
   </div>
   </div>
   <%= f.select :payment_method, payment_methods, html: {class: "span3"} %>
-
-  <div class="control-group">
-    <label class="control-label">Spam control</label>
-  <div class="controls">
-  <%= recaptcha_tags %>
-  </div>
-  </div>
 
   <%= f.actions do %>
     <%= f.primary 'Make reservation', disable_with: 'Reserving...' %>

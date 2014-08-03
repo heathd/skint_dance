@@ -1,6 +1,13 @@
-<% if notice.present? %>
-  <p class="notice"><%= notice %></p>
-<% end %>
-<% if alert.present? %>
-  <p class="alert"><%= alert %></p>
+<%
+interesting_flashes = flash.reject {|name, _| name.to_s == 'recaptcha_error' }
+%>
+
+<% if interesting_flashes.any? %>
+<div class="controls alert alert-block">
+
+  <% interesting_flashes.each do |name, msg| -%>
+    <%= content_tag :p, msg, class: name %>
+  <% end -%>
+
+</div>
 <% end %>

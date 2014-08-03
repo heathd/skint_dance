@@ -1,0 +1,40 @@
+<section>
+  <div class="page-header">
+<h1>Reserve your place at Skint 2014</h1>
+<h3>31st October - 3rd November 2014, Ashover, Derbyshire</h3>
+</div>
+
+<%= bootstrap_form_for(pre_reservation, html: { class: 'form-horizontal' }) do |f|%>
+  <% if f.object.errors.any? %>
+  <div class="controls alert alert-block">
+    <h4>Error</h4>
+    <%= f.object.errors.full_messages.to_sentence %>
+  </div>
+  <% end %>
+
+  <% if flash[:errors].present? %>
+  <div class="controls alert alert-block">
+    <h4>Error</h4>
+    <%= flash[:errors] %>
+  </div>
+
+
+  <% end %>
+  <%= f.text_field :name, label: "Your name", autofocus: true %>
+  <%= f.text_field :email %>
+  <%= f.select :resource_category, {label: "Sleeping where?", "in the hall" => :sleeping, "camping/own accomodation" => :non_sleeping } %>
+  <%= f.select(:how_many, {label: "How many places?", "One" => "1", "Two" => "2"}) %>
+
+  <div class="control-group">
+    <label class="control-label">Spam control</label>
+  <div class="controls">
+  <%= recaptcha_tags %>
+  </div>
+  </div>
+
+  <%= f.actions do %>
+    <%= f.primary 'Make reservation', disable_with: 'Reserving...' %>
+  <% end %>
+
+<% end %>
+</section>

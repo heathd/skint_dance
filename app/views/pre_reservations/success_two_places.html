@@ -1,0 +1,36 @@
+<section>
+  <div class="page-header">
+<h1>Reservation received</h1>
+</div>
+
+<p>Congratulations you have pre-reserved <% pluralize(@pre_reservations.count, @pre_resevations.first.resource_category + " place") %> .</p>
+
+<p>You must now complete your reservation for <b>each place</b> within one hour (before <%= l @pre_reservations.first.expires_at %>).</p>
+
+<p>We've sent you an email message for each place containing a unique link to complete your reservation. 
+
+<p>Your reservation references is <strong><%= @reservation.reference %></strong></p>
+
+<% if @reservation.payment_method == "gocardless" %>
+  <p><%= link_to "Pay using Go Cardless", @reservation.gocardless_url, class: "btn btn-large btn-primary "%></p>
+
+<% elsif @reservation.payment_method == 'paypal' %>
+  <%= render partial: @reservation.paypal_partial  %>
+<% else %>
+  <h2>Cheque payment</h2>
+  <p>Post a cheque payable to <strong>Skint</strong> for <strong><%= @reservation.formatted_price %></strong> to:</p>
+  <address>
+    David Heath<br/>
+    Flat 7, 14-16 Sedgwick St<br/>
+    London E9 6AE
+  </address>
+<% end %>
+
+<% if @reservation.payment_due.present? %>
+  <p>You have until <%= l @reservation.payment_due %> to pay for your reservation before we release your place to someone else.</p>
+<% else %>
+  <p>We'd be grateful if you could make your payment as soon as you can, thanks!</p>
+<% end %>
+
+<p>You can come back to this payment page any time by using the following link:</p>
+<p><%= link_to reservation_success_url @reservation.reference %></p>

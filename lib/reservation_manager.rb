@@ -1,3 +1,5 @@
+require 'securerandom'
+
 class ReservationManager
   def initialize(params = {})
     @clock = params[:clock] || Time.zone
@@ -78,16 +80,24 @@ class ReservationManager
     end
   end
 
-  def make_reservation(params, clock = @clock)
+  def pre_reserve(params, clock = @clock)
+    how_many = params.delete(:how_many)
+    how_many.times.map do |i|
+      params = params.merge(
+        expires_at: clock.now + 1.hour,
+        reference: random_reference
+      )
+      PreReservation.create(params)
+    end
+  end
+
+  def make_reservation(pre_reservation, params, clock = @clock)
     ticket_type_name = params.delete(:ticket_type)
     ticket_type = TicketType.find_by_name(ticket_type_name) or raise "Couldn't find ticket type #{ticket_type_name}"
-    captcha_valid = params.delete(:captcha_valid)
-    reservation = Reservation.new(params.merge(state: "new", reference: random_reference, ticket_type: ticket_type))
+    reservation = Reservation.new(params.merge(state: "new", ticket_type: ticket_type, reference: pre_reservation.reference))
     reservation.requested_at = clock.now
     if reservation.valid?
-      if !captcha_valid
-        reservation.errors.add(:base, "Word verification response is incorrect, please try again.")
-      elsif remaining_places(ticket_type.resource_category) > 0
+      if remaining_places(ticket_type.resource_category) > 0
         reservation.save
         reservation.reserve
         reservation.set_payment_due!(clock)
@@ -140,14 +150,15 @@ class ReservationManager
     Reservation.find_by_reference(reference)
   end
 
+  def reference_used?(reference)
+    !! (Reservation.find_by_reference(reference) || PreReservation.find_by_reference(reference))
+  end
+
   def random_reference
-    require 'securerandom'
-    reference = ::SecureRandom.urlsafe_base64(4)
-    if find_reservation(reference)
-      ::SecureRandom.urlsafe_base64(5)
-    else
-      reference
-    end
+    begin
+      reference = ::SecureRandom.urlsafe_base64(5)
+    end while reference_used?(reference)
+    reference
   end
 
 end
