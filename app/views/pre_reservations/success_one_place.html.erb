@@ -5,7 +5,23 @@
 
 <p>You have pre-reserved your <%= @pre_reservation.resource_category %> place.</p>
 
-<p><b>You now have one hour</b> to complete your reservation (before <%= l @pre_reservations.first.expires_at %>). If you don't do so your place will be automatically re-allocated.</p>
+<p>
+  <b>You now have one hour</b> to complete your reservation (before <%= l @pre_reservations.first.expires_at %>).
+</p>
+
+<p>
+  Make sure you complete the reservation form within an hour, <b>even if you
+  get put on the waiting list at first</b>.
+</p>
+
+<p>
+  All places will be allocated strictly in the order of pre-reservations, including waiting list places. 
+</p>
+
+<p>
+  If you don't complete your reservation within one hour, your place will be cancelled
+  and re-allocated to the next person (and you won't get put on the waiting list).
+</p>
 
 <p>We've sent you an email message containing a unique link which will allow you to return here, in case of any problem. </p>
 

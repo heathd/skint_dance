@@ -6,7 +6,9 @@
 
 <div class="alert alert-block alert-info">
 <h4>Note</h4>
+
 <p>You have until <b><%= l @pre_reservation.expires_at %></b> to complete your reservation.</p>
+
 </div>
 
 <%= bootstrap_form_for(@reservation, html: { class: 'form-horizontal' }) do |f|%>

@@ -1,36 +1,38 @@
 <section>
   <div class="page-header">
-<h1>Reservation received</h1>
+  <h1>Pre-reservation acknowledgement</h1>
 </div>
 
-<p>Congratulations you have pre-reserved <% pluralize(@pre_reservations.count, @pre_resevations.first.resource_category + " place") %> .</p>
+<p>You have pre-reserved two <%= @pre_reservations.first.resource_category %> places.</p>
 
-<p>You must now complete your reservation for <b>each place</b> within one hour (before <%= l @pre_reservations.first.expires_at %>).</p>
+<p><b>You now have one hour</b> to complete both reservations (before <%= l @pre_reservations.first.expires_at %>). </p>
 
-<p>We've sent you an email message for each place containing a unique link to complete your reservation. 
+<p>
+  Make sure you complete both reservations within an hour, <b>even if you
+  get put on the waiting list at first</b>.
+</p>
 
-<p>Your reservation references is <strong><%= @reservation.reference %></strong></p>
+<p>
+  All places will be allocated strictly in the order of pre-reservations, including waiting list places. 
+</p>
 
-<% if @reservation.payment_method == "gocardless" %>
-  <p><%= link_to "Pay using Go Cardless", @reservation.gocardless_url, class: "btn btn-large btn-primary "%></p>
+<p>
+  Any incompleted pre-reservations will be cancelled
+  and re-allocated to the next person (and you won't get put on the waiting list).
+</p>
 
-<% elsif @reservation.payment_method == 'paypal' %>
-  <%= render partial: @reservation.paypal_partial  %>
-<% else %>
-  <h2>Cheque payment</h2>
-  <p>Post a cheque payable to <strong>Skint</strong> for <strong><%= @reservation.formatted_price %></strong> to:</p>
-  <address>
-    David Heath<br/>
-    Flat 7, 14-16 Sedgwick St<br/>
-    London E9 6AE
-  </address>
+<p>We've sent you TWO email messages, one for each place. </p>
+
+<p>Each email contains a unique link for that place, which can be used to complete the reservation for that place. </p>
+
+<p>You can forward one of the emails on to the other person so that they can complete it, or you can fill out the reservation for them yourself.</p>
+
+<p>Here are the reservation links and references:</p>
+
+<% @pre_reservations.each do |pre_reservation| %>
+
+<h2>Reference <%= pre_reservation.reference %></h2>
+
+<h2>&#x261e; <%= link_to "Complete this reservation", reservations_path(pre_reservation: pre_reservation.reference), target: "_blank" %></h2>
+
 <% end %>
-
-<% if @reservation.payment_due.present? %>
-  <p>You have until <%= l @reservation.payment_due %> to pay for your reservation before we release your place to someone else.</p>
-<% else %>
-  <p>We'd be grateful if you could make your payment as soon as you can, thanks!</p>
-<% end %>
-
-<p>You can come back to this payment page any time by using the following link:</p>
-<p><%= link_to reservation_success_url @reservation.reference %></p>
