@@ -38,7 +38,8 @@ class ReservationManager
   end
 
   def places_available_to_waiting_list(resource_category)
-    available_places(resource_category) - reserved_places(resource_category)
+    # Todo: maybe subtract pre-reserved places?
+    available_places(resource_category) - reserved_places(resource_category) 
   end
 
   def cancelled_places(resource_category)
@@ -76,6 +77,13 @@ class ReservationManager
       )
       PreReservation.create(params)
     end
+  end
+
+  def allocated_pre_reservations(resource_category)
+    PreReservation
+      .where(resource_category: resource_category)
+      .where("expires_at < ?", Time.zone.now + 1.hour)
+      .includes(:reservation)
   end
 
   def make_reservation(pre_reservation, params, clock = @clock)
@@ -126,6 +134,7 @@ class ReservationManager
   end
 
   def waiting_list(resource_category)
+    # todo: order by pre_reservation id asc
     WaitingListEntry.in_resource_category(resource_category).order("waiting_list_entries.added_at asc")
   end
 

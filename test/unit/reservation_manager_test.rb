@@ -195,7 +195,9 @@ class ReservationManagerTest < ActiveSupport::TestCase
     reservation = reservation_manager.make_reservation(pre_reservation, reservation_params)
     assert reservation.valid?
     assert_equal "waiting_list", reservation.state
-    assert_equal [reservation], reservation_manager.waiting_list(reservation.resource_category).map(&:reservation)
+    waiting_list_entries = reservation_manager.waiting_list(reservation.resource_category)
+    assert_equal [pre_reservation.id], waiting_list_entries.map(&:pre_reservation_id)
+    assert_equal [reservation], waiting_list_entries.map(&:reservation)
   end
 
   test "cancelling a reserved place does not release a place to general signups" do

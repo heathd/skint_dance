@@ -51,9 +51,17 @@ class Reservation < ActiveRecord::Base
   def add_to_waiting_list(waiting_list_resource_category)
     connection.transaction do
       self.state = "waiting_list" if waiting_list_resource_category == self.resource_category
-      waiting_list_entries.create(resource_category: waiting_list_resource_category, added_at: requested_at)
+      # todo, add pre_reservation id to waiting list entry
+      waiting_list_entries.create(
+        resource_category: waiting_list_resource_category, 
+        added_at: requested_at,
+        pre_reservation: self.pre_reservation)
       save!
     end
+  end
+
+  def pre_reservation
+    PreReservation.find_by_reference(self.reference)
   end
 
   def self.waiting_for(resource_category)

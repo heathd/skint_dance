@@ -1,3 +1,19 @@
 #reservation_payment_method, #reservation_ticket_type {
   width: 100%;
 }
+
+.pre-reservations {
+  .intro p {
+    font-size: 20px;
+    line-height: 1.6;
+    margin: 15px 0;
+    max-width: 600px;
+  }
+  p.img {
+    margin: 0 auto;
+  }
+  .form-header {
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+}
