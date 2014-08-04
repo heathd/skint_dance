@@ -1,0 +1,13 @@
+<section>
+  <div class="page-header">
+<h1>Waiting list</h1>
+</div>
+
+<p>Thanks, we've received your request and you've been added to our waiting list.</p>
+
+<p>Your reference is <strong><%= @reservation.reference %></strong></p>
+
+<p>We'll get in touch if a place becomes available.</p>
+
+<p>You can come back to this page any time by using the following link:</p>
+<p><%= link_to reservation_success_url @reservation.reference %></p>

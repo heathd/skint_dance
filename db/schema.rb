@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130729232147) do
+ActiveRecord::Schema.define(:version => 20140803175922) do
 
   create_table "active_admin_comments", :force => true do |t|
     t.string   "resource_id",   :null => false
@@ -83,6 +83,16 @@ ActiveRecord::Schema.define(:version => 20130729232147) do
     t.integer  "reservation_id"
   end
 
+  create_table "pre_reservations", :force => true do |t|
+    t.string   "reference"
+    t.string   "email"
+    t.string   "name"
+    t.string   "resource_category"
+    t.datetime "expires_at"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+  end
+
   create_table "reservations", :force => true do |t|
     t.string   "reference"
     t.string   "state"
@@ -118,6 +128,9 @@ ActiveRecord::Schema.define(:version => 20130729232147) do
     t.integer  "reservation_id"
     t.string   "resource_category"
     t.datetime "added_at"
+    t.integer  "pre_reservation_id"
   end
+
+  add_index "waiting_list_entries", ["pre_reservation_id"], :name => "index_waiting_list_entries_on_pre_reservation_id"
 
 end

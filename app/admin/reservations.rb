@@ -1,3 +1,37 @@
+ActiveAdmin.register PreReservation do
+  index do
+    selectable_column
+    column("Name", sortable: :name) { |r| link_to r.name, [:edit, :admin, r] }
+    column :email
+    column(:reference)
+    column("Reservation link") do |pre_reservation| 
+      reservation = Reservation.find_by_reference(pre_reservation.reference)
+      if reservation
+        link_to "reservation done", [:edit, :admin, reservation]
+      elsif pre_reservation.expired?
+        "expired"
+      else
+        link_to "reservation link", reservations_path(pre_reservation: pre_reservation.reference)
+      end
+    end
+
+    column :resource_category
+    column(:expires_at) { |r| l r.expires_at }
+  end
+
+  form do |f|
+    f.inputs "Pre reservation" do
+      f.input :name
+      f.input :email
+      f.input :resource_category, as: :select, collection: TicketType.weekend.map(&:resource_category).uniq
+      f.input :created_at, disabled: true
+      f.input :expires_at
+    end
+
+    f.buttons
+  end
+end
+
 ActiveAdmin.register Reservation do
   index do
     column "Name", sortable: :name do |r| link_to r.name, edit_admin_reservation_path(r) end

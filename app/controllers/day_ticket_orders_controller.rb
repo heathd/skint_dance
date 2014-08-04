@@ -8,13 +8,13 @@ class DayTicketOrdersController < ApplicationController
 
   def create
     redirect_to action: :closed
-    @day_ticket_order = RESERVATION_MANAGER.place_day_ticket_order(params[:day_ticket_order])
-    if @day_ticket_order.valid?
-      DayTicketOrderAcknowledgement.acknowledge(@day_ticket_order).deliver
-      redirect_to @day_ticket_order
-    else
-      render :index
-    end
+    # @day_ticket_order = RESERVATION_MANAGER.place_day_ticket_order(params[:day_ticket_order])
+    # if @day_ticket_order.valid?
+    #   DayTicketOrderAcknowledgement.acknowledge(@day_ticket_order).deliver
+    #   redirect_to @day_ticket_order
+    # else
+    #   render :index
+    # end
   end
 
   def show

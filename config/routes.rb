@@ -13,6 +13,10 @@ SkintDance::Application.routes.draw do
     get :success
   end
 
+  resources :pre_reservations do
+    get :success
+  end
+
   # get "reservations/success/:reference" => "reservations#success", as: "reservation_success"
 
   match ':action', controller: :pages

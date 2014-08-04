@@ -1,0 +1,78 @@
+<section class="pre-reservations">
+  <div class="page-header">
+    <h1>Request a place at Skint 2014</h1>
+    <h3>31st October - 3rd November 2014, Ashover, Derbyshire</h3>
+  </div>
+
+  <h2>Pre-reservations</h2>
+
+  <div class="intro">
+    <p>
+      We're trying a &ldquo;pre-reservation&rdquo; system this year, so that you don't 
+      have to rush when filling out the reservation form.
+    </p>
+
+    <p>
+      Your pre-reservation does not guarantee you a place at Skint. It
+      simply confirms your place in the queue!
+    </p>
+    <p class="img">
+      <%= image_tag 'ticket_dispenser.jpg' %>
+    </p>
+
+    <p>
+      Once you have a pre-reservation you'll have an hour to complete
+      the reservation form. <b>You don't need to rush</b>.
+    </p>
+
+    <p>
+      Make sure you complete the reservation form within an hour, <b>even if you
+      get put on the waiting list at first</b>.
+    </p>
+
+    <p>
+      All places will be allocated strictly in the order of pre-reservations, including waiting list places. 
+    </p>
+
+    <p>
+      If you don't complete your reservation within one hour, your place will be cancelled
+      and re-allocated to the next person (and you won't get put on the waiting list).
+    </p>
+  </div>
+
+  <h2 class="form-header">Make your pre-reservation</h2>
+
+<%= bootstrap_form_for(pre_reservation, html: { class: 'form-horizontal' }) do |f|%>
+  <% if f.object.errors.any? %>
+  <div class="controls alert alert-block">
+    <h4>Error</h4>
+    <%= f.object.errors.full_messages.to_sentence %>
+  </div>
+  <% end %>
+
+  <% if flash[:errors].present? %>
+  <div class="controls alert alert-block">
+    <h4>Error</h4>
+    <%= flash[:errors] %>
+  </div>
+
+
+  <% end %>
+  <%= f.text_field :name, label: "Your name", autofocus: true %>
+  <%= f.text_field :email %>
+  <%= f.select :resource_category, {label: "Sleeping where?", "in the hall" => :sleeping, "camping/own accomodation" => :non_sleeping } %>
+  <%= f.select(:how_many, {label: "How many places?", "One" => "1", "Two" => "2"}) %>
+
+  <div class="control-group">
+    <label class="control-label">Spam control</label>
+  <div class="controls">
+  <%= recaptcha_tags %>
+  </div>
+  </div>
+
+  <%= f.actions do %>
+    <%= f.primary 'Make reservation', disable_with: 'Reserving...' %>
+  <% end %>
+
+<% end %>
+</section>

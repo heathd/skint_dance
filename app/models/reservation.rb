@@ -8,10 +8,11 @@ class Reservation < ActiveRecord::Base
   has_many :gocardless_bills
 
   PAYMENT_METHODS = %w{paypal gocardless cheque}
-  validates_presence_of :name, :email, :phone_number, :what_can_you_help_with
+  validates_presence_of :name, :email, :phone_number, :what_can_you_help_with, :reference
   validates_email_format_of :email
   validates :payment_method, inclusion: {in: PAYMENT_METHODS}
   validates_presence_of :ticket_type
+  validate :valid_pre_reservation!
 
   state_machine :state, :initial => :new do
     state :new
@@ -50,9 +51,17 @@ class Reservation < ActiveRecord::Base
   def add_to_waiting_list(waiting_list_resource_category)
     connection.transaction do
       self.state = "waiting_list" if waiting_list_resource_category == self.resource_category
-      waiting_list_entries.create(resource_category: waiting_list_resource_category, added_at: requested_at)
+      # todo, add pre_reservation id to waiting list entry
+      waiting_list_entries.create(
+        resource_category: waiting_list_resource_category, 
+        added_at: requested_at,
+        pre_reservation: self.pre_reservation)
       save!
     end
+  end
+
+  def pre_reservation
+    PreReservation.find_by_reference(self.reference)
   end
 
   def self.waiting_for(resource_category)
@@ -83,5 +92,21 @@ class Reservation < ActiveRecord::Base
 
   def balance
     ticket_type && (ticket_type.price_in_pence - total_paid_in_pence)
+  end
+
+  def valid_pre_reservation!
+    pre_reservation = PreReservation.find_by_reference(self.reference)
+    unless pre_reservation
+      errors[:reference] << "no matching pre-reservation found with reference #{self.reference}"
+      return
+    end
+    if pre_reservation.used_by && pre_reservation.used_by != self
+      errors[:reference] << "invalid, pre-reservation already used for another reservation"
+      return
+    end
+    if pre_reservation.resource_category != ticket_type.resource_category
+      errors[:ticket_type] << "invalid, pre-reservation only allows '#{pre_reservation.resource_category.humanize}' ticket types"
+      return
+    end
   end
 end

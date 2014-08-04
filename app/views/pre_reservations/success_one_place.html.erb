@@ -1,0 +1,14 @@
+<section>
+  <div class="page-header">
+<h1>Pre-reservation acknowledgement</h1>
+</div>
+
+<p>You have pre-reserved your <%= @pre_reservation.resource_category %> place.</p>
+
+<p><b>You now have one hour</b> to complete your reservation (before <%= l @pre_reservations.first.expires_at %>). If you don't do so your place will be automatically re-allocated.</p>
+
+<p>We've sent you an email message containing a unique link which will allow you to return here, in case of any problem. </p>
+
+<p>Your pre-reservation reference is <strong><%= @pre_reservation.reference %></strong></p>
+
+<h2>&#x261e; <%= link_to "Complete your reservation", reservations_path(pre_reservation: @pre_reservation.reference) %></h2>
