@@ -1,6 +1,8 @@
 require 'securerandom'
 
 class ReservationManager
+  SALES_OPEN = '2014-08-06 19:00 +01:00'
+
   def initialize(params = {})
     @clock = params[:clock] || Time.zone
     if params[:availability_schedule]
@@ -15,7 +17,7 @@ class ReservationManager
   def self.availability_schedule
     {
       nil => {},
-      '2014-08-06 19:00 +01:00' => {
+      SALES_OPEN => {
         sleeping: 85,
         non_sleeping: 15,
         friday_evening: 80,

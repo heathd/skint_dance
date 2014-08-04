@@ -11,7 +11,13 @@
 
 <p>A weekend of folk music and dance in Derbyshire for the skint, with music and dance from across Europe. Workshops, bals, sessions, lovely food, friendly atmosphere and beautiful countryside nearby!</p>
 
-<h3>Bookings will open on Wednesday 6th August at 19:00 (BST)</h3>
+<% if Time.zone.now > Time.zone.parse(ReservationManager::SALES_OPEN) %>
+  <h2>Bookings</h2>
+  <a href="/pre_reservations" class="btn btn-large btn-primary">Bookings open</a>
+
+<% else %>
+  <h3>Bookings will open on Wednesday 6th August at 19:00 (BST)</h3>
+<% end %>
 
 <p><a href="info.html">Find out more about Skint</a></p>
 
