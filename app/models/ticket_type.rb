@@ -23,7 +23,7 @@ class TicketType < ActiveRecord::Base
   end
 
   def place_available_for?(pre_reservation)
-    RESERVATION_MANAGER.place_available_for?(resource_category, pre_reservation)
+    RESERVATION_MANAGER.place_available_for?(pre_reservation)
   end
 
   def waiting_list_open?
