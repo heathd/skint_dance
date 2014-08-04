@@ -14,6 +14,10 @@ set :user, "heathd"
 set :deploy_via, :remote_cache
 set :use_sudo, false
 
+set :default_env, {
+  'DEVISE_SECRET_KEY' => 'dummy-needed-for-asset-precompile-task'
+}
+
 set :scm, :git
 
 role :web, "davidheath.org"                          # Your HTTP server, Apache/etc
