@@ -33,11 +33,11 @@ class ReservationManager
     schedule_in_force[resource_category.to_sym] || 0
   end
 
-  def remaining_places(resource_category)
+  def remaining_places(resource_category, intended_pre_reservation = nil)
     remaining = 
       places_available_to_waiting_list(resource_category) - 
       cancelled_places(resource_category) - 
-      unredeemed_prereservations(resource_category)
+      unredeemed_prereservations(resource_category, intended_pre_reservation)
     remaining > 0 ? remaining : 0
   end
 
@@ -50,8 +50,17 @@ class ReservationManager
     Reservation.cancelled.in_resource_category(resource_category).count
   end
 
-  def unredeemed_prereservations(resource_category)
-    PreReservation.where("expires_at > ?", @clock.now).where("not exists(select * from reservations where reference=pre_reservations.reference)").count
+  def unredeemed_prereservations(resource_category, intended_pre_reservation = nil)
+    scope = PreReservation
+      .where(resource_category: resource_category)
+      .where("expires_at > ?", @clock.now)
+      .where("not exists(select * from reservations where reference=pre_reservations.reference)")
+
+    if intended_pre_reservation
+      scope = scope.where("reference != ?", intended_pre_reservation.reference)
+    end
+
+    scope.count
   end
 
   def reserved_places(resource_category)
@@ -100,13 +109,13 @@ class ReservationManager
     reservation = Reservation.new(params.merge(state: "new", ticket_type: ticket_type, reference: pre_reservation.reference))
     reservation.requested_at = clock.now
     if reservation.valid?
-      if remaining_places(ticket_type.resource_category) > 0
+      if remaining_places(ticket_type.resource_category, pre_reservation) > 0
         reservation.save
         reservation.reserve
         reservation.set_payment_due!(clock)
 
         # If they reserved a non-sleeping place when sleeping was full up, add them to the sleeping waiting list
-        if reservation.resource_category.to_sym == :non_sleeping && remaining_places(:sleeping) == 0 && waiting_list_open?(:sleeping)
+        if reservation.resource_category.to_sym == :non_sleeping && remaining_places(:sleeping, pre_reservation) == 0 && waiting_list_open?(:sleeping)
           reservation.add_to_waiting_list(:sleeping)
         end
       elsif waiting_list_open?(ticket_type.resource_category)
@@ -114,7 +123,7 @@ class ReservationManager
         reservation.add_to_waiting_list(reservation.resource_category)
 
         # On the waiting list for a non-sleeping place they are also added to the sleeping waiting list
-        if reservation.resource_category.to_sym == :non_sleeping && remaining_places(:sleeping) == 0 && waiting_list_open?(:sleeping)
+        if reservation.resource_category.to_sym == :non_sleeping && remaining_places(:sleeping, pre_reservation) == 0 && waiting_list_open?(:sleeping)
           reservation.add_to_waiting_list(:sleeping)
         end
       else

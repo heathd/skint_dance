@@ -231,6 +231,20 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal 84, reservation_manager.remaining_places("sleeping")
   end
 
+  test "a still-valid, unredeemed pre-reservation can be ignored when calculating remaining places for a matching reservation" do
+    reservation_manager = reservation_manager_when_sales_are_live
+
+    pre_reservation = reservation_manager.pre_reserve(
+      name: "Jane",
+      email: "jane@example.com",
+      resource_category: "sleeping",
+      how_many: 1
+    ).first
+
+    assert_equal 84, reservation_manager.remaining_places("sleeping")
+    assert_equal 85, reservation_manager.remaining_places("sleeping", pre_reservation)
+  end
+
   test "a still-valid, redeemed pre-reservation decrements the number of remaining places only once" do
     reservation_manager = reservation_manager_when_sales_are_live
 
