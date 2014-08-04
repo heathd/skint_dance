@@ -60,7 +60,7 @@ class ReservationManager
     scope = PreReservation
       .where(resource_category: resource_category)
       .where("expires_at > ?", @clock.now)
-      .where("not exists(select * from reservations where reference=pre_reservations.reference)")
+      .where("not exists(select * from reservations where reservations.reference=pre_reservations.reference)")
 
     if intended_pre_reservation
       scope = scope.where("reference != ?", intended_pre_reservation.reference)
@@ -102,11 +102,20 @@ class ReservationManager
     end
   end
 
-  def allocated_pre_reservations(resource_category)
-    PreReservation
-      .where(resource_category: resource_category)
-      .where("expires_at < ?", Time.zone.now + 1.hour)
-      .includes(:reservation)
+  def place_available_for?(pre_reservation, resource_category = nil)
+    unexpired_priors = PreReservation
+      .where(resource_category: resource_category || pre_reservation.resource_category)
+      .where("id < ?", pre_reservation.id)
+      .where("expires_at > ?", @clock.now)
+      .where("not exists(select * from reservations where reservations.reference=pre_reservations.reference)")
+      .count
+    reserved_priors = PreReservation
+      .where(resource_category: resource_category || pre_reservation.resource_category)
+      .where("id < ?", pre_reservation.id)
+      .where("exists(select * from reservations where reservations.reference=pre_reservations.reference and reservations.state!='cancelled')")
+      .count
+
+    unexpired_priors + reserved_priors < available_places(resource_category || pre_reservation.resource_category)
   end
 
   def make_reservation(pre_reservation, params, clock = @clock)
@@ -115,7 +124,7 @@ class ReservationManager
     reservation = Reservation.new(params.merge(state: "new", ticket_type: ticket_type, reference: pre_reservation.reference))
     reservation.requested_at = clock.now
     if reservation.valid?
-      if remaining_places(ticket_type.resource_category, pre_reservation) > 0
+      if place_available_for?(pre_reservation)
         reservation.save
         reservation.reserve
         reservation.set_payment_due!(clock)

@@ -22,8 +22,8 @@ class TicketType < ActiveRecord::Base
     "£#{pounds}.#{pence}"
   end
 
-  def remaining_places(pre_reservation)
-    RESERVATION_MANAGER.remaining_places(resource_category, pre_reservation)
+  def place_available_for?(pre_reservation)
+    RESERVATION_MANAGER.place_available_for?(resource_category, pre_reservation)
   end
 
   def waiting_list_open?
@@ -35,8 +35,8 @@ class TicketType < ActiveRecord::Base
   end
 
   def option_label(pre_reservation)
-    remaining_text = if remaining_places(pre_reservation) > 0
-      "#{remaining_places(pre_reservation)} left"
+    remaining_text = if place_available_for?(pre_reservation) > 0
+      "place available"
     elsif waiting_list_open?
       "waiting list"
     elsif next_ticket_release_date

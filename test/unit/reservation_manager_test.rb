@@ -280,6 +280,31 @@ class ReservationManagerTest < ActiveSupport::TestCase
     assert_equal 85, reservation_manager.remaining_places("sleeping")
   end
 
+  test "pre-reservation order determines availability of place" do
+    clock = fixed_clock('2014-08-06 19:00 +01:00')
+    reservation_manager = ReservationManager.new(clock: clock, available_places: {sleeping: 1, non_sleeping: 0})
+
+    pr1 = reservation_manager.pre_reserve(
+      name: "Jane",
+      email: "jane@example.com",
+      resource_category: "sleeping",
+      how_many: 1
+    ).first
+
+    pr2 = reservation_manager.pre_reserve(
+      name: "John",
+      email: "john@example.com",
+      resource_category: "sleeping",
+      how_many: 1
+    ).first
+
+    r2 = reservation_manager.make_reservation(pr2, reservation_params)
+    assert_equal "waiting_list", r2.state
+
+    r1 = reservation_manager.make_reservation(pr1, reservation_params)
+    assert_equal "reserved", r1.state
+  end
+
   test "waiting_list returns places in order of pre-reservation" do
     reservation_manager = ReservationManager.new(available_places: {sleeping: 0, non_sleeping: 0})
     
