@@ -17,6 +17,10 @@ class ReservationManager
   def self.availability_schedule
     {
       nil => {},
+      '2014-08-01 19:00 +01:00' => {
+        sleeping: 12,
+        non_sleeping: 0
+      },
       SALES_OPEN => {
         sleeping: 85,
         non_sleeping: 15,
