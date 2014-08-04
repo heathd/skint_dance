@@ -35,7 +35,7 @@ class TicketType < ActiveRecord::Base
   end
 
   def option_label(pre_reservation)
-    remaining_text = if place_available_for?(pre_reservation) > 0
+    remaining_text = if place_available_for?(pre_reservation)
       "place available"
     elsif waiting_list_open?
       "waiting list"
