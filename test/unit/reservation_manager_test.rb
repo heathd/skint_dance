@@ -216,13 +216,67 @@ class ReservationManagerTest < ActiveSupport::TestCase
     end
   end
 
-  test "waiting_list returns places in reverse order of request" do
+  test "a still-valid, unredeemed pre-reservation decrements the number of remaining places" do
+    reservation_manager = reservation_manager_when_sales_are_live
+
+    assert_equal 85, reservation_manager.remaining_places("sleeping")
+
+    pre_reservations = reservation_manager.pre_reserve(
+      name: "Jane",
+      email: "jane@example.com",
+      resource_category: "sleeping",
+      how_many: 1
+    )
+
+    assert_equal 84, reservation_manager.remaining_places("sleeping")
+  end
+
+  test "a still-valid, redeemed pre-reservation decrements the number of remaining places only once" do
+    reservation_manager = reservation_manager_when_sales_are_live
+
+    assert_equal 85, reservation_manager.remaining_places("sleeping")
+
+    pre_reservation = reservation_manager.pre_reserve(
+      name: "Jane",
+      email: "jane@example.com",
+      resource_category: "sleeping",
+      how_many: 1
+    ).first
+
+    reservation = reservation_manager.make_reservation(pre_reservation, reservation_params)
+
+    assert reservation.valid?
+    assert_equal "reserved", reservation.state
+    assert_equal 84, reservation_manager.remaining_places("sleeping")
+  end
+
+  test "an expired, unredeemed pre-reservation does not decrement remaining places" do
+    reservation_manager = reservation_manager_when_sales_are_live
+
+    pre_reservations = reservation_manager.pre_reserve(
+      name: "Jane",
+      email: "jane@example.com",
+      resource_category: "sleeping",
+      how_many: 1
+    )
+
+    assert_equal 84, reservation_manager.remaining_places("sleeping")
+
+    reservation_manager = ReservationManager.new(clock: fixed_clock(pre_reservations.first.expires_at.to_s))
+    assert_equal 85, reservation_manager.remaining_places("sleeping")
+  end
+
+  test "waiting_list returns places in order of pre-reservation" do
     reservation_manager = ReservationManager.new(available_places: {sleeping: 0, non_sleeping: 0})
-    reservations = [
-      reservation_manager.make_reservation(pre_reservation(1), reservation_params, fixed_clock('2011-01-01')),
-      reservation_manager.make_reservation(pre_reservation(2), reservation_params, fixed_clock('2011-01-02')),
-    ]
-    assert_equal reservations, reservation_manager.waiting_list(:sleeping).map(&:reservation)
+    
+    sales_open = fixed_clock('2011-01-01 00:00:00')
+    pr1 = pre_reservation(1, expires_at: Time.zone.parse('2011-01-01 01:00:00'))
+    pr2 = pre_reservation(2, expires_at: Time.zone.parse('2011-01-01 01:00:00'))
+
+    r2 = reservation_manager.make_reservation(pr2, reservation_params, fixed_clock('2011-01-01 00:00:01'))
+    r1 = reservation_manager.make_reservation(pr1, reservation_params, fixed_clock('2011-01-01 00:00:06'))
+
+    assert_equal [r1, r2], reservation_manager.waiting_list(:sleeping).map(&:reservation)
   end
 
   test "waiting_list ignores cancelled places" do

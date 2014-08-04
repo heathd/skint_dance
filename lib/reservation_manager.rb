@@ -34,7 +34,11 @@ class ReservationManager
   end
 
   def remaining_places(resource_category)
-    [0, places_available_to_waiting_list(resource_category) - cancelled_places(resource_category)].max
+    remaining = 
+      places_available_to_waiting_list(resource_category) - 
+      cancelled_places(resource_category) - 
+      unredeemed_prereservations(resource_category)
+    remaining > 0 ? remaining : 0
   end
 
   def places_available_to_waiting_list(resource_category)
@@ -44,6 +48,10 @@ class ReservationManager
 
   def cancelled_places(resource_category)
     Reservation.cancelled.in_resource_category(resource_category).count
+  end
+
+  def unredeemed_prereservations(resource_category)
+    PreReservation.where("expires_at > ?", @clock.now).where("not exists(select * from reservations where reference=pre_reservations.reference)").count
   end
 
   def reserved_places(resource_category)
@@ -134,8 +142,7 @@ class ReservationManager
   end
 
   def waiting_list(resource_category)
-    # todo: order by pre_reservation id asc
-    WaitingListEntry.in_resource_category(resource_category).order("waiting_list_entries.added_at asc")
+    WaitingListEntry.in_resource_category(resource_category).order("waiting_list_entries.pre_reservation_id asc")
   end
 
   def unpaid

@@ -6,6 +6,12 @@ class ReservationsControllerTest < ActionController::TestCase
   end
 
   test "submitting a reservation makes a reservation" do
+    pre_reservation = RESERVATION_MANAGER.pre_reserve(
+      name: "Fred",
+      email: "fred@example.com",
+      resource_category: "non_sleeping",
+      how_many: 1
+    ).first
 
     reservation_params = {
       name: "Fred",
@@ -17,7 +23,7 @@ class ReservationsControllerTest < ActionController::TestCase
       what_can_you_help_with: "stuff",
       payment_method: "gocardless"
     }
-    post :create, reservation: reservation_params
+    post :create, reservation: reservation_params, pre_reservation: pre_reservation.reference
     
     assert_equal 1, Reservation.count
     assert_equal "Fred", Reservation.first.name
