@@ -21,7 +21,7 @@ class PreReservationsController < ApplicationController
   end
 
   def success
-    @pre_reservations = params[:references].map do |ref|
+    @pre_reservations = params.fetch(:references, [params[:pre_reservation_id]]).map do |ref|
       PreReservation.find_by_reference(ref)
     end
 
