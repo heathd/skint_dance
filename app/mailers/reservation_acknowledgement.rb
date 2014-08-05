@@ -12,7 +12,7 @@ class ReservationAcknowledgement < ActionMailer::Base
 private
   def subject
     prefix = Rails.env.production? ? "" : "[TEST] "
-    prefix + "Skint reservation acknowledgement"
+    prefix + "Reservation successful, please pay now!"
   end
 
   def email_address_with_name(reservation)
