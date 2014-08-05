@@ -3,6 +3,9 @@ class PreReservationsController < ApplicationController
   before_filter :captcha_valid?, only: :create
 
   def index
+    if Time.zone.now < Time.zone.parse(ReservationManager::SALES_OPEN)
+      redirect_to "/"
+    end
   end
 
   def create
