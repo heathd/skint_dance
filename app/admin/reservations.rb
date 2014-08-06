@@ -7,7 +7,7 @@ ActiveAdmin.register PreReservation do
     column("Reservation link") do |pre_reservation| 
       reservation = Reservation.find_by_reference(pre_reservation.reference)
       if reservation
-        link_to "reservation done", [:edit, :admin, reservation]
+        link_to("reservation done", [:edit, :admin, reservation]) + " (#{reservation.resource_category} #{reservation.state})"
       elsif pre_reservation.expired?
         "expired"
       else

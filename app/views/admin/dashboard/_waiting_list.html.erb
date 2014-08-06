@@ -10,7 +10,7 @@
     <th>Reservation</th>
     <th>Date requested</th>
   </thead>
-  <% RESERVATION_MANAGER.waiting_list(resource_category).limit(5).map.with_index do |waiting_list_entry, i| %>
+  <% RESERVATION_MANAGER.waiting_list(resource_category).limit(10).map.with_index do |waiting_list_entry, i| %>
     <tr>
       <td><%= i + 1%></td>
       <td>
