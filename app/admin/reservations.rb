@@ -148,6 +148,9 @@ ActiveAdmin.register WaitingListEntry do
     column "Pre reservation id", :pre_reservation_id
     column "Name" do |w| link_to w.reservation.name, admin_waiting_list_entry_path(w) end
     column "Email", sortable: :email do |w| link_to w.reservation.email, admin_waiting_list_entry_path(w) end
+    column "Reservation" do |w| 
+      link_to("#{w.reservation.resource_category}", admin_reservation_path(w.reservation)) + " (#{w.reservation.state})"
+    end
     column "Date", :added_at
     column "Type", :resource_category
   end
