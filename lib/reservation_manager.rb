@@ -1,7 +1,7 @@
 require 'securerandom'
 
 class ReservationManager
-  SALES_OPEN = '2014-08-06 19:00 +01:00'
+  SALES_OPEN = '2014-08-06 21:00 +01:00'
 
   def initialize(params = {})
     @clock = params[:clock] || Time.zone
