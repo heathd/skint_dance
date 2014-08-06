@@ -7,6 +7,7 @@
   <thead>
     <th>Position</th>
     <th>Name</th>
+    <th>Reservation</th>
     <th>Date requested</th>
   </thead>
   <% RESERVATION_MANAGER.waiting_list(resource_category).limit(5).map.with_index do |waiting_list_entry, i| %>
@@ -14,6 +15,9 @@
       <td><%= i + 1%></td>
       <td>
         <%= link_to(waiting_list_entry.name, admin_waiting_list_entry_path(waiting_list_entry)) %>
+      </td>
+      <td>
+        <%= link_to("#{waiting_list_entry.reservation.resource_category}", admin_reservation_path(waiting_list_entry.reservation)) %> (<%= waiting_list_entry.reservation.state %>)
       </td>
       <td>
         <%= l waiting_list_entry.added_at %>

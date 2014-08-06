@@ -98,7 +98,7 @@ class ReservationManager
     end
   end
 
-  def place_available_for?(pre_reservation, resource_category = nil)
+  def reservations_ahead_of(pre_reservation, resource_category = nil)
     unexpired_priors = PreReservation
       .where(resource_category: resource_category || pre_reservation.resource_category)
       .where("id < ?", pre_reservation.id)
@@ -110,8 +110,10 @@ class ReservationManager
       .where("id < ?", pre_reservation.id)
       .where("exists(select * from reservations where reservations.reference=pre_reservations.reference and reservations.state!='cancelled')")
       .count
+  end
 
-    unexpired_priors + reserved_priors < available_places(resource_category || pre_reservation.resource_category)
+  def place_available_for?(pre_reservation, resource_category = nil)
+    reservations_ahead_of(pre_reservation, resource_category) < available_places(resource_category || pre_reservation.resource_category)
   end
 
   def make_reservation(pre_reservation, params, clock = @clock)
