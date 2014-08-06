@@ -110,6 +110,7 @@ class ReservationManager
       .where("id < ?", pre_reservation.id)
       .where("exists(select * from reservations where reservations.reference=pre_reservations.reference and reservations.state!='cancelled')")
       .count
+    unexpired_priors + reserved_priors
   end
 
   def place_available_for?(pre_reservation, resource_category = nil)
