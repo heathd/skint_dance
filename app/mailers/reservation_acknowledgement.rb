@@ -1,5 +1,5 @@
 class ReservationAcknowledgement < ActionMailer::Base
-  default from: "Skint <skint.dance@gmail.com>"
+  default from: "Skint <skint@skintdance.org.uk>", reply_to: "skint.dance@gmail.com"
 
   def acknowledge(reservation)
     @reservation = reservation

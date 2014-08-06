@@ -1,5 +1,5 @@
 class DayTicketOrderAcknowledgement < ActionMailer::Base
-  default from: "Skint <skint.dance@gmail.com>"
+  default from: "Skint <skint@skintdance.org.uk>", reply_to: "skint.dance@gmail.com"
 
   def acknowledge(day_ticket_order)
     @day_ticket_order = day_ticket_order
