@@ -23,7 +23,7 @@ class ReservationManager
         friday_evening: 80,
         saturday_daytime: 30,
         saturday_evening: 80,
-        sunday_daytime: 30        
+        sunday_daytime: 30
       }
     }
   end
@@ -36,16 +36,16 @@ class ReservationManager
   end
 
   def remaining_places(resource_category, intended_pre_reservation = nil)
-    remaining = 
-      places_available_to_waiting_list(resource_category) - 
-      cancelled_places(resource_category) - 
+    remaining =
+      places_available_to_waiting_list(resource_category) -
+      cancelled_places(resource_category) -
       unredeemed_prereservations(resource_category, intended_pre_reservation)
     remaining > 0 ? remaining : 0
   end
 
   def places_available_to_waiting_list(resource_category)
     # Todo: maybe subtract pre-reserved places?
-    available_places(resource_category) - reserved_places(resource_category) 
+    available_places(resource_category) - reserved_places(resource_category)
   end
 
   def cancelled_places(resource_category)
@@ -80,7 +80,7 @@ class ReservationManager
     future_schedules = @availability_schedule.sort_by {|k,v| k||""}.select do |from_date, schedule|
       from_date && Time.zone.parse(from_date) > clock.now && schedule.has_key?(resource_category.to_sym)
     end
-    if future_schedules.any? 
+    if future_schedules.any?
       Time.zone.parse(future_schedules[0][0])
     else
       nil
@@ -116,8 +116,8 @@ class ReservationManager
   end
 
   def reservations_ahead_of(pre_reservation, resource_category = nil)
-    unexpired_pre_reservations_ahead_of(pre_reservation, resource_category) + 
-      reserved_places(resource_category || pre_reservation.resource_category) 
+    unexpired_pre_reservations_ahead_of(pre_reservation, resource_category) +
+      reserved_places(resource_category || pre_reservation.resource_category)
   end
 
   def place_available_for?(pre_reservation, resource_category = nil)
