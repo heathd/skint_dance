@@ -6,6 +6,7 @@
 <table class="index_table">
   <thead>
     <th>Position</th>
+    <th>PreReservation</th>
     <th>Name</th>
     <th>Reservation</th>
     <th>Date requested</th>
@@ -13,6 +14,9 @@
   <% RESERVATION_MANAGER.waiting_list(resource_category).limit(10).map.with_index do |waiting_list_entry, i| %>
     <tr>
       <td><%= i + 1%></td>
+      <td>
+        <%= waiting_list_entry.pre_reservation_id %>
+      </td>
       <td>
         <%= link_to(waiting_list_entry.name, admin_waiting_list_entry_path(waiting_list_entry)) %>
       </td>

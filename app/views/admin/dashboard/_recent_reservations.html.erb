@@ -3,7 +3,8 @@
     <li><%= reservation_count_by_state.state.humanize %>: <%= reservation_count_by_state.count %>
   <% end %>
   <li>Remaining places: <%= RESERVATION_MANAGER.remaining_places(resource_category) %></li>
-  <li>Unexpired, unredeemed pre-reservations: <%= RESERVATION_MANAGER.unexpired_pre_reservations(resource_category) %></li>
+  <li>Unexpired, unredeemed pre-reservations: 
+    <%= link_to(RESERVATION_MANAGER.unexpired_pre_reservations(resource_category), "/admin/unexpired_prereservations?resource_category=#{resource_category}") %></li>
 </ul>
 
 <h3>Recent reservations</h3>

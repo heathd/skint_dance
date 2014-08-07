@@ -1,0 +1,59 @@
+<%
+scope = PreReservation.unredeemed.unexpired
+if params[:resource_category]
+  scope = scope.where(resource_category: params[:resource_category])
+end
+%>
+
+<h3>Unexpired, unredeemed prereservations <%= params[:resource_category] ? "(#{params[:resource_category]})" : "" %></h3>
+<p>Count: <%= scope.count %> </p>
+
+<table class="index_table">
+  <thead>
+    <th>Id</th>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Reference</th>
+    <th>Resource category</th>
+    <th>Reservation</th>
+    <th>Created at</th>
+    <th>Expires at</th>
+  </thead>
+  <% scope.order("id asc").map do |pre_reservation| %>
+    <tr>
+      <td>
+        <%= pre_reservation.id %>
+      </td>
+      <td>
+        <%= link_to(pre_reservation.name, admin_pre_reservation_path(pre_reservation)) %>
+      </td>
+      <td>
+        <%= pre_reservation.email %>
+      </td>
+      <td>
+        <%= pre_reservation.reference %>
+      </td>
+      <td>
+        <%= pre_reservation.resource_category %>
+      </td>
+      <td>
+        <%=
+        reservation = pre_reservation.reservation
+        if reservation
+          link_to("reservation done", [:edit, :admin, reservation]) + " (#{reservation.resource_category} #{reservation.state})"
+        elsif pre_reservation.expired?
+          "expired"
+        else
+          link_to "reservation link", reservations_path(pre_reservation: pre_reservation.reference)
+        end
+        %>      
+      </td>
+      <td>
+        <%= l pre_reservation.created_at %>
+      </td>
+      <td>
+        <%= l pre_reservation.expires_at %>
+      </td>
+    </tr>
+  <% end %>
+</table>

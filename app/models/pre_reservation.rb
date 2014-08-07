@@ -12,6 +12,11 @@ class PreReservation < ActiveRecord::Base
     where("not exists(select * from reservations where reservations.reference=pre_reservations.reference)")
   end
 
+  def self.unexpired(clock = Time.zone)
+    where("expires_at > ?", clock.now)
+  end
+
+
   def waiting_list?
     
   end

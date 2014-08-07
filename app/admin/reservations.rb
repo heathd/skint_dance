@@ -1,6 +1,7 @@
 ActiveAdmin.register PreReservation do
   index do
     selectable_column
+    column("id")
     column("Name", sortable: :name) { |r| link_to r.name, [:edit, :admin, r] }
     column :email
     column(:reference)
