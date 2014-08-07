@@ -115,9 +115,17 @@ class ReservationManager
       .count
   end
 
+  def waiting_list_entries_ahead_of(pre_reservation, resource_category = nil)
+    WaitingListEntry
+      .where("pre_reservation_id < ?", pre_reservation.id)
+      .where(resource_category: resource_category || pre_reservation.resource_category)
+      .count
+  end
+
   def reservations_ahead_of(pre_reservation, resource_category = nil)
-    unexpired_pre_reservations_ahead_of(pre_reservation, resource_category) +
-      reserved_places(resource_category || pre_reservation.resource_category)
+    unexpired_pre_reservations_ahead_of(pre_reservation, resource_category) + 
+      waiting_list_entries_ahead_of(pre_reservation, resource_category) + 
+      reserved_places(resource_category || pre_reservation.resource_category) 
   end
 
   def place_available_for?(pre_reservation, resource_category = nil)
