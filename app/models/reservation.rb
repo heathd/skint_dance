@@ -14,6 +14,8 @@ class Reservation < ActiveRecord::Base
   validates_presence_of :ticket_type
   validate :valid_pre_reservation!
 
+  attr_accessor :want_waiting_list
+
   state_machine :state, :initial => :new do
     state :new
     state :reserved

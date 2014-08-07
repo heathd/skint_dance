@@ -136,7 +136,7 @@ class ReservationManager
         reservation.set_payment_due!(clock)
 
         # If they reserved a non-sleeping place when sleeping was full up, add them to the sleeping waiting list
-        if reservation.resource_category.to_sym == :non_sleeping && remaining_places(:sleeping, pre_reservation) == 0 && waiting_list_open?(:sleeping)
+        if reservation.resource_category.to_sym == :non_sleeping && params[:want_waiting_list] == "1"
           reservation.add_to_waiting_list(:sleeping)
         end
       elsif waiting_list_open?(ticket_type.resource_category)
@@ -144,7 +144,7 @@ class ReservationManager
         reservation.add_to_waiting_list(reservation.resource_category)
 
         # On the waiting list for a non-sleeping place they are also added to the sleeping waiting list
-        if reservation.resource_category.to_sym == :non_sleeping && remaining_places(:sleeping, pre_reservation) == 0 && waiting_list_open?(:sleeping)
+        if reservation.resource_category.to_sym == :non_sleeping && params[:want_waiting_list] == "1" && waiting_list_open?(:sleeping)
           reservation.add_to_waiting_list(:sleeping)
         end
       else
