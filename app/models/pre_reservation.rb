@@ -8,6 +8,10 @@ class PreReservation < ActiveRecord::Base
   validates_presence_of :name, :email, :reference, :resource_category, :expires_at
   validates_email_format_of :email
 
+  def self.unredeemed
+    where("not exists(select * from reservations where reservations.reference=pre_reservations.reference)")
+  end
+
   def waiting_list?
     
   end

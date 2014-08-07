@@ -98,6 +98,14 @@ class ReservationManager
     end
   end
 
+  def unexpired_pre_reservations(resource_category)
+    PreReservation
+      .where(resource_category: resource_category)
+      .where("expires_at > ?", @clock.now)
+      .unredeemed
+      .count
+  end
+
   def unexpired_pre_reservations_ahead_of(pre_reservation, resource_category = nil)
     PreReservation
       .where(resource_category: resource_category || pre_reservation.resource_category)
