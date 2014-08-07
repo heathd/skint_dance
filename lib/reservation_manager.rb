@@ -18,8 +18,8 @@ class ReservationManager
     {
       nil => {},
       SALES_OPEN => {
-        sleeping: 85,
-        non_sleeping: 15,
+        sleeping: 80,
+        non_sleeping: 20,
         friday_evening: 80,
         saturday_daytime: 30,
         saturday_evening: 80,
