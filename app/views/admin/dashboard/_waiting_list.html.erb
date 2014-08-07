@@ -27,7 +27,7 @@
         <%= l waiting_list_entry.added_at %>
       </td>
       <td>
-        <% if RESERVATION_MANAGER.place_available_for?(waiting_list_entry.pre_reservation) %>
+        <% if RESERVATION_MANAGER.place_available_for?(waiting_list_entry.pre_reservation, resource_category) %>
           <%= button_to("Allocate place", allocate_admin_waiting_list_entry_path(waiting_list_entry)) %>
         <% end %>
       </td>
