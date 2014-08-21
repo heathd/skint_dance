@@ -18,8 +18,8 @@ class ReservationManager
     {
       nil => {},
       SALES_OPEN => {
-        sleeping: 78,
-        non_sleeping: 22,
+        sleeping: 75,
+        non_sleeping: 25,
         friday_evening: 80,
         saturday_daytime: 30,
         saturday_evening: 80,
@@ -123,9 +123,9 @@ class ReservationManager
   end
 
   def reservations_ahead_of(pre_reservation, resource_category = nil)
-    unexpired_pre_reservations_ahead_of(pre_reservation, resource_category) + 
-      waiting_list_entries_ahead_of(pre_reservation, resource_category) + 
-      reserved_places(resource_category || pre_reservation.resource_category) 
+    unexpired_pre_reservations_ahead_of(pre_reservation, resource_category) +
+      waiting_list_entries_ahead_of(pre_reservation, resource_category) +
+      reserved_places(resource_category || pre_reservation.resource_category)
   end
 
   def place_available_for?(pre_reservation, resource_category = nil)
